@@ -28,14 +28,12 @@ public class StudentService {
     }
 
     public Student getStudent(int registrationNo){
-        Optional<Student> student =  studentRepository.findByRegistrationNo(registrationNo);
-
-        if(student.isEmpty()){
-            throw new StudentNotFoundException(
-                "Student with registration number " + registrationNo + " not found."
+        return  studentRepository
+            .findByRegistrationNo(registrationNo)
+            .orElseThrow(() -> new StudentNotFoundException(
+                    "Student with registration number " + registrationNo + " not found."
+                )
             );
-        }
-        return student.get();
     }
 
     public Student addStudent(Student student){
@@ -55,15 +53,12 @@ public class StudentService {
 
     public Student updateStudentDetails(int registrationNo, StudentUpdateDTO dto){
 
-        Optional<Student> studentObj = studentRepository.findByRegistrationNo(registrationNo);
-
-        if(studentObj.isEmpty()){
-            throw new StudentNotFoundException(
-                "Student with registration number " + registrationNo + " not found."
+        Student student = studentRepository
+            .findByRegistrationNo(registrationNo)
+            .orElseThrow(() -> new StudentNotFoundException(
+                    "Student with registration number " + registrationNo + " not found."
+                )
             );
-        }
-
-        Student student = studentObj.get();
 
         Optional<Student> studentWithEmail = studentRepository.findByEmail(dto.getEmail());
 
@@ -77,29 +72,19 @@ public class StudentService {
                 );
             }
         }
-        /* 
-            if(!student.getEmail().equals(dto.getEmail())){
-                if(studentRepository.existsByEmail(dto.getEmail())){
-                    throw new StudentAlreadyExistsException(
-                        "Student with email " + dto.getEmail() + " already exists."
-                    );
-                }
-            }
-        */
         mapper.updateStudent(student, dto);
 
         return student;
     }
 
     public void deleteStudent(int registrationNo){
-        Optional<Student> student = studentRepository.findByRegistrationNo(registrationNo);
-
-        if(student.isEmpty()){
-            throw new StudentNotFoundException(
-                "Student with registration number " + registrationNo + " not found."
+        Student student = studentRepository
+            .findByRegistrationNo(registrationNo)
+            .orElseThrow(() -> new StudentNotFoundException(
+                    "Student with registration number " + registrationNo + " not found."
+                )
             );
-        }
 
-        studentRepository.deleteStudent(student.get());
+        studentRepository.deleteStudent(student);
     }
 }
