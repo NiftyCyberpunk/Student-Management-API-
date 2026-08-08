@@ -34,7 +34,7 @@ public class StudentRepository {
     }
 
     public boolean existsByRegistrationNo(int registrationNo){
-        return findByRegistrationNo(registrationNo) != null;
+        return findByRegistrationNo(registrationNo).isPresent();
     }
 
     public Optional<Student> findByEmail(String email){
@@ -47,7 +47,7 @@ public class StudentRepository {
     }
 
     public boolean existsByEmail(String email){
-        return findByEmail(email) != null;
+        return findByEmail(email).isPresent();
     }
 
     public Student addStudent(Student student){

@@ -1,7 +1,6 @@
 package com.aryan.studentmanagementapi.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -30,18 +29,13 @@ public class StudentService {
     public Student getStudent(int registrationNo){
         return  studentRepository
             .findByRegistrationNo(registrationNo)
-            .orElseThrow(() -> new StudentNotFoundException(
-                    "Student with registration number " + registrationNo + " not found."
-                )
-            );
+            .orElseThrow(() -> new StudentNotFoundException(registrationNo));
     }
 
     public Student addStudent(Student student){
 
         if(studentRepository.existsByRegistrationNo(student.getRegistrationNo())) {
-            throw new StudentAlreadyExistsException(
-                "Student with registration number " + student.getRegistrationNo() + " already exists."
-            );
+            throw new StudentNotFoundException(student.getRegistrationNo());
         }
         if(studentRepository.existsByEmail(student.getEmail())){
             throw new StudentAlreadyExistsException(
@@ -55,23 +49,18 @@ public class StudentService {
 
         Student student = studentRepository
             .findByRegistrationNo(registrationNo)
-            .orElseThrow(() -> new StudentNotFoundException(
-                    "Student with registration number " + registrationNo + " not found."
-                )
+            .orElseThrow(() -> new StudentNotFoundException(registrationNo));
+
+        studentRepository
+            .findByEmail(dto.getEmail())
+            .ifPresent(foundStudent -> {
+                    if(foundStudent.getRegistrationNo() != student.getRegistrationNo()){
+                        throw new StudentAlreadyExistsException(
+                            "Student with email " + dto.getEmail() + " already exists."
+                        );
+                    }
+                } 
             );
-
-        Optional<Student> studentWithEmail = studentRepository.findByEmail(dto.getEmail());
-
-        if(studentWithEmail.isPresent()){
-
-            Student foundStudent = studentWithEmail.get();
-
-            if(foundStudent.getRegistrationNo() != student.getRegistrationNo()){
-                throw new StudentAlreadyExistsException(
-                    "Student with email " + dto.getEmail() + " already exists."
-                );
-            }
-        }
         mapper.updateStudent(student, dto);
 
         return student;
@@ -80,10 +69,7 @@ public class StudentService {
     public void deleteStudent(int registrationNo){
         Student student = studentRepository
             .findByRegistrationNo(registrationNo)
-            .orElseThrow(() -> new StudentNotFoundException(
-                    "Student with registration number " + registrationNo + " not found."
-                )
-            );
+            .orElseThrow(() -> new StudentNotFoundException(registrationNo));
 
         studentRepository.deleteStudent(student);
     }

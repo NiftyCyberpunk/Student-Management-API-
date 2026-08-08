@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 public class StudentUpdateDTO {
     @NotBlank
     private String name;
+    @NotBlank
     @Email
     private String email;
     @NotBlank
