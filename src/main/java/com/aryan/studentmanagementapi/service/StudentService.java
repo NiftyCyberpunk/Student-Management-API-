@@ -34,14 +34,24 @@ public class StudentService {
 
     public Student addStudent(Student student){
 
-        if(studentRepository.existsByRegistrationNo(student.getRegistrationNo())) {
-            throw new StudentNotFoundException(student.getRegistrationNo());
-        }
-        if(studentRepository.existsByEmail(student.getEmail())){
-            throw new StudentAlreadyExistsException(
-                "Student with email " + student.getEmail() + " already exists."
+        studentRepository
+            .findByRegistrationNo(student.getRegistrationNo())
+            .ifPresent(existingStudent -> {
+                    throw new StudentAlreadyExistsException(
+                        "Student with registration number " + student.getRegistrationNo() + " already exists."
+                    );
+                }
             );
-        }
+
+        studentRepository
+            .findByEmail(student.getEmail())
+            .ifPresent(existingStudent -> {
+                    throw new StudentAlreadyExistsException(
+                        "Student with email " + student.getEmail() + " already exists."
+                    );
+                }
+            );
+    
         return studentRepository.addStudent(student);
     }
 

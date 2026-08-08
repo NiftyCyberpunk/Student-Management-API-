@@ -33,10 +33,6 @@ public class StudentRepository {
         return Optional.empty();
     }
 
-    public boolean existsByRegistrationNo(int registrationNo){
-        return findByRegistrationNo(registrationNo).isPresent();
-    }
-
     public Optional<Student> findByEmail(String email){
         for(Student student : students){
             if(student.getEmail().equals(email)){
@@ -44,10 +40,6 @@ public class StudentRepository {
             }
         }
         return Optional.empty();
-    }
-
-    public boolean existsByEmail(String email){
-        return findByEmail(email).isPresent();
     }
 
     public Student addStudent(Student student){
