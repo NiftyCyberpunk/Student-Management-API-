@@ -5,32 +5,43 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 @Entity
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer registrationNo; 
+
     @Column(nullable = false)  
     private String name;
+
     @Column(nullable = false,unique = true) 
     private String email;
-    @Column(nullable = false)
-    private String branch;
+
+    @ManyToOne
+    @JoinColumn(name = "branch_id", nullable = false)
+    private Branch branch;
+
+    @Min(1)
+    @Max(4)
     private int year;
 
     protected Student(){
 
     }
 
-    public Student(String name, String email, String branch, int year){
+    public Student(String name, String email, Branch branch, int year){
         this.name = name;
         this.email = email;
         this.branch = branch;
         this.year = year;
     }
     
-    public int getRegistrationNo(){
+    public Integer getRegistrationNo(){
         return this.registrationNo;
     }
 
@@ -42,7 +53,7 @@ public class Student {
         return this.email;
     }
 
-    public String getBranch(){
+    public Branch getBranch(){
         return this.branch;
     }
 
@@ -58,7 +69,7 @@ public class Student {
         this.email = email;
     }
 
-    public void setBranch(String branch){
+    public void setBranch(Branch branch){
         this.branch = branch;
     }
 

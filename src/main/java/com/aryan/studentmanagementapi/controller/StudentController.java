@@ -45,10 +45,10 @@ public class StudentController {
         List<StudentResponseDTO> dtos = mapper.toStudentResponseDTOs(students);
 
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(
-                    new ApiResponse<>(HttpStatus.OK.value(), "Students fetched successfully", dtos)
-                );
+            .status(HttpStatus.OK)
+            .body(
+                new ApiResponse<>(HttpStatus.OK.value(), "Students fetched successfully", dtos)
+            );
     }
 
     @GetMapping("/students/{registrationNo}")
@@ -58,25 +58,24 @@ public class StudentController {
         StudentResponseDTO dto = mapper.toStudentResponseDTO(student);
 
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(
-                    new ApiResponse<>(HttpStatus.OK.value(), "Student fetched successfully", dto)
-                );
+            .status(HttpStatus.OK)
+            .body(
+                new ApiResponse<>(HttpStatus.OK.value(), "Student fetched successfully", dto)
+            );
     }
 
     @PostMapping("/students")
     public ResponseEntity<ApiResponse<StudentResponseDTO>> addStudent(@Valid @RequestBody StudentRequestDTO dto){
-        Student student =  mapper.toStudent(dto);
 
-        Student savedStudent = studentService.addStudent(student);
+        Student savedStudent = studentService.addStudent(dto);
 
         StudentResponseDTO responseDto = mapper.toStudentResponseDTO(savedStudent);
 
         return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(
-                    new ApiResponse<>(HttpStatus.CREATED.value(), "Student added successfully", responseDto)
-                );
+            .status(HttpStatus.CREATED)
+            .body(
+                new ApiResponse<>(HttpStatus.CREATED.value(), "Student added successfully", responseDto)
+            );
     } 
 
     @PutMapping("/students/{registrationNo}")
@@ -87,10 +86,10 @@ public class StudentController {
         StudentResponseDTO responseDto = mapper.toStudentResponseDTO(updatedStudent);
 
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(
-                    new ApiResponse<>(HttpStatus.OK.value(), "Student updated successfully", responseDto)
-                );
+            .status(HttpStatus.OK)
+            .body(
+                new ApiResponse<>(HttpStatus.OK.value(), "Student updated successfully", responseDto)
+            );
     }
 
     @DeleteMapping("/students/{registrationNo}")
@@ -98,9 +97,9 @@ public class StudentController {
         studentService.deleteStudent(registrationNo);
 
         return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(
-                        new ApiResponse<>(HttpStatus.OK.value(), "Student deleted successfully.", null)
-                    );
+            .status(HttpStatus.OK)
+            .body(
+                new ApiResponse<>(HttpStatus.OK.value(), "Student deleted successfully.", null)
+            );
     }
 }

@@ -34,6 +34,24 @@ public class GlobalExceptionHandler {
                     .body(error);
     }
 
+    @ExceptionHandler(BranchNotFoundException.class)
+    public ResponseEntity<ApiError> BranchNotFound(BranchNotFoundException ex){
+        ApiError error = new ApiError(HttpStatus.NOT_FOUND.value(), ex.getMessage(), Collections.emptyList());
+
+        return ResponseEntity                    
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(error);
+    }
+
+    @ExceptionHandler(BranchAlreadyExistsException.class)
+    public ResponseEntity<ApiError> handleBranchAlreadyExistsException(BranchAlreadyExistsException ex){
+        ApiError error = new ApiError(HttpStatus.CONFLICT.value(), ex.getMessage(), Collections.emptyList());
+
+        return ResponseEntity                    
+                    .status(HttpStatus.CONFLICT)
+                    .body(error);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex){
 

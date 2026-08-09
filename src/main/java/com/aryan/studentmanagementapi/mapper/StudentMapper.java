@@ -8,16 +8,17 @@ import org.springframework.stereotype.Component;
 import com.aryan.studentmanagementapi.dto.StudentRequestDTO;
 import com.aryan.studentmanagementapi.dto.StudentResponseDTO;
 import com.aryan.studentmanagementapi.dto.StudentUpdateDTO;
+import com.aryan.studentmanagementapi.model.Branch;
 import com.aryan.studentmanagementapi.model.Student;
 
 @Component
 public class StudentMapper {
     
-    public Student toStudent(StudentRequestDTO dto){
+    public Student toStudent(StudentRequestDTO dto, Branch branch){
         Student student =  new Student(
             dto.getName(),
             dto.getEmail(),
-            dto.getBranch(),
+            branch,
             dto.getYear()
         );
 
@@ -29,7 +30,7 @@ public class StudentMapper {
         StudentResponseDTO dto = new StudentResponseDTO(
             student.getRegistrationNo(),
             student.getName(),
-            student.getBranch(),
+            student.getBranch().getName(),
             student.getYear()
         );
 
@@ -44,7 +45,7 @@ public class StudentMapper {
                 new StudentResponseDTO(
                     student.getRegistrationNo(),
                     student.getName(),
-                    student.getBranch(),
+                    student.getBranch().getName(),
                     student.getYear()
                 )
             );
@@ -53,10 +54,10 @@ public class StudentMapper {
         return dtos;
     }
 
-    public void updateStudent(Student student, StudentUpdateDTO dto){
+    public void updateStudent(Student student, StudentUpdateDTO dto, Branch branch){
         student.setName(dto.getName());
         student.setEmail(dto.getEmail());
-        student.setBranch(dto.getBranch());
+        student.setBranch(branch);
         student.setYear(dto.getYear());
     }
 }

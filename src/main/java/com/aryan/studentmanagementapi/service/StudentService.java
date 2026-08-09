@@ -4,11 +4,15 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.aryan.studentmanagementapi.dto.StudentRequestDTO;
 import com.aryan.studentmanagementapi.dto.StudentUpdateDTO;
+import com.aryan.studentmanagementapi.exception.BranchNotFoundException;
 import com.aryan.studentmanagementapi.exception.StudentAlreadyExistsException;
 import com.aryan.studentmanagementapi.exception.StudentNotFoundException;
 import com.aryan.studentmanagementapi.mapper.StudentMapper;
+import com.aryan.studentmanagementapi.model.Branch;
 import com.aryan.studentmanagementapi.model.Student;
+import com.aryan.studentmanagementapi.repository.BranchRepository;
 import com.aryan.studentmanagementapi.repository.StudentRepository;
 
 import jakarta.transaction.Transactional;
@@ -17,10 +21,12 @@ import jakarta.transaction.Transactional;
 public class StudentService {
     
     private final StudentRepository studentRepository;
+    private final BranchRepository branchRepository;
     private final StudentMapper mapper;
 
-    public StudentService(StudentRepository studentRepository, StudentMapper mapper){
+    public StudentService(StudentRepository studentRepository, StudentMapper mapper, BranchRepository branchRepository){
         this.studentRepository = studentRepository;
+        this.branchRepository = branchRepository;
         this.mapper = mapper;
     }
     
@@ -34,15 +40,23 @@ public class StudentService {
             .orElseThrow(() -> new StudentNotFoundException(registrationNo));
     }
 
-    public Student addStudent(Student student){
+    public Student addStudent(StudentRequestDTO dto){
         studentRepository
-            .findByEmail(student.getEmail())
+            .findByEmail(dto.getEmail())
             .ifPresent(existingStudent -> {
                     throw new StudentAlreadyExistsException(
-                        "Student with email " + student.getEmail() + " already exists."
+                        "Student with email " + dto.getEmail() + " already exists."
                     );
                 }
             );
+        Branch branch = branchRepository
+            .findByName(dto.getBranch())
+            .orElseThrow(() -> new BranchNotFoundException(
+                    "The Branch name " + dto.getBranch() + " not exists."
+                )
+            );
+        
+        Student student = mapper.toStudent(dto, branch);
     
         return studentRepository.save(student);
     }
@@ -64,7 +78,15 @@ public class StudentService {
                     }
                 } 
             );
-        mapper.updateStudent(student, dto);
+
+        Branch branch = branchRepository
+            .findByName(dto.getBranch())
+            .orElseThrow(() -> new BranchNotFoundException(
+                    "The Branch name " + dto.getBranch() + " not exists."
+                )
+            );
+        
+        mapper.updateStudent(student, dto, branch);
 
         return student;
     }
