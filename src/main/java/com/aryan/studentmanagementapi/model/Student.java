@@ -1,15 +1,29 @@
 package com.aryan.studentmanagementapi.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
+@Entity
 public class Student {
-    private int registrationNo;   
-    private String name; 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer registrationNo; 
+    @Column(nullable = false)  
+    private String name;
+    @Column(nullable = false,unique = true) 
     private String email;
+    @Column(nullable = false)
     private String branch;
     private int year;
 
-    public Student(int registrationNo, String name, String email, String branch, int year){
-        this.registrationNo = registrationNo;
+    protected Student(){
+
+    }
+
+    public Student(String name, String email, String branch, int year){
         this.name = name;
         this.email = email;
         this.branch = branch;

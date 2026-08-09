@@ -15,7 +15,6 @@ public class StudentMapper {
     
     public Student toStudent(StudentRequestDTO dto){
         Student student =  new Student(
-            dto.getRegistrationNo(),
             dto.getName(),
             dto.getEmail(),
             dto.getBranch(),

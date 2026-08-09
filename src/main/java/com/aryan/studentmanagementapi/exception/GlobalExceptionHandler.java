@@ -44,22 +44,13 @@ public class GlobalExceptionHandler {
         List <FieldError> fieldErrors = bindingResult.getFieldErrors();
 
         for(FieldError fieldError:fieldErrors){
-            errors.add(fieldError.getField() + ":" + fieldError.getDefaultMessage());
+            errors.add(fieldError.getField() + ": " + fieldError.getDefaultMessage());
         }
 
         ApiError error = new ApiError(HttpStatus.BAD_REQUEST.value(), "Validation failed", errors);
 
         return ResponseEntity                    
                     .status(HttpStatus.BAD_REQUEST)
-                    .body(error);
-    }
-
-    @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity<ApiError> handleNullPointerException(NullPointerException ex){
-        ApiError error = new ApiError(HttpStatus.NOT_FOUND.value(), "Student not found.", Collections.emptyList());
-
-        return ResponseEntity                    
-                    .status(HttpStatus.NOT_FOUND)
                     .body(error);
     }
 }

@@ -4,11 +4,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 
 public class StudentRequestDTO {
-    @Positive
-    private int registrationNo;
     @NotBlank
     private String name;
     @NotBlank
@@ -24,16 +21,11 @@ public class StudentRequestDTO {
 
     }
 
-    public StudentRequestDTO(int registrationNo, String name, String email, String branch, int year){
-        this.registrationNo = registrationNo;
+    public StudentRequestDTO(String name, String email, String branch, int year){
         this.name = name;
         this.email = email;
         this.branch = branch;
         this.year = year;
-    }
-
-    public int getRegistrationNo(){
-        return this.registrationNo;
     }
 
     public String getName(){
@@ -50,10 +42,6 @@ public class StudentRequestDTO {
 
     public int getYear(){
         return this.year;
-    }
-
-    public void setRegistrationNo(int registrationNo){
-        this.registrationNo = registrationNo;
     }
 
     public void setName(String name){

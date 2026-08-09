@@ -11,6 +11,8 @@ import com.aryan.studentmanagementapi.mapper.StudentMapper;
 import com.aryan.studentmanagementapi.model.Student;
 import com.aryan.studentmanagementapi.repository.StudentRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class StudentService {
     
@@ -23,26 +25,16 @@ public class StudentService {
     }
     
     public List<Student> getAllStudents(){
-        return studentRepository.getAllStudents();
+        return studentRepository.findAll();
     }
 
     public Student getStudent(int registrationNo){
         return  studentRepository
-            .findByRegistrationNo(registrationNo)
+            .findById(registrationNo)
             .orElseThrow(() -> new StudentNotFoundException(registrationNo));
     }
 
     public Student addStudent(Student student){
-
-        studentRepository
-            .findByRegistrationNo(student.getRegistrationNo())
-            .ifPresent(existingStudent -> {
-                    throw new StudentAlreadyExistsException(
-                        "Student with registration number " + student.getRegistrationNo() + " already exists."
-                    );
-                }
-            );
-
         studentRepository
             .findByEmail(student.getEmail())
             .ifPresent(existingStudent -> {
@@ -52,13 +44,14 @@ public class StudentService {
                 }
             );
     
-        return studentRepository.addStudent(student);
+        return studentRepository.save(student);
     }
 
+    @Transactional
     public Student updateStudentDetails(int registrationNo, StudentUpdateDTO dto){
 
         Student student = studentRepository
-            .findByRegistrationNo(registrationNo)
+            .findById(registrationNo)
             .orElseThrow(() -> new StudentNotFoundException(registrationNo));
 
         studentRepository
@@ -78,9 +71,9 @@ public class StudentService {
 
     public void deleteStudent(int registrationNo){
         Student student = studentRepository
-            .findByRegistrationNo(registrationNo)
+            .findById(registrationNo)
             .orElseThrow(() -> new StudentNotFoundException(registrationNo));
 
-        studentRepository.deleteStudent(student);
+        studentRepository.delete(student);
     }
 }
