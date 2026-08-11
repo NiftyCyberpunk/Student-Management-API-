@@ -1,7 +1,7 @@
 package com.aryan.studentmanagementapi.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aryan.studentmanagementapi.dto.StudentResponseDTO;
 import com.aryan.studentmanagementapi.dto.StudentUpdateDTO;
+import com.aryan.studentmanagementapi.dto.StudentPageResponseDTO;
 import com.aryan.studentmanagementapi.dto.StudentRequestDTO;
 import com.aryan.studentmanagementapi.mapper.StudentMapper;
 import com.aryan.studentmanagementapi.model.Student;
@@ -39,15 +41,19 @@ public class StudentController {
     }
 
     @GetMapping("/students")
-    public ResponseEntity<ApiResponse<List<StudentResponseDTO>>> getStudents(){
-        List<Student> students =  studentService.getAllStudents();
+    public ResponseEntity<ApiResponse<StudentPageResponseDTO>> getStudents(Pageable pageable, @RequestParam(required = false) Integer year, @RequestParam(required = false) String branch, @RequestParam(required = false) String name){
+        Page<Student> studentsPage =  studentService.getAllStudents(pageable, year, branch, name);
 
-        List<StudentResponseDTO> dtos = mapper.toStudentResponseDTOs(students);
+        Page<StudentResponseDTO> dtos = studentsPage.map(student -> {
+            return mapper.toStudentResponseDTO(student);
+        });
+
+        StudentPageResponseDTO responseDTO = mapper.toStudentPageResponseDTO(dtos);
 
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(
-                new ApiResponse<>(HttpStatus.OK.value(), "Students fetched successfully", dtos)
+                new ApiResponse<>(HttpStatus.OK.value(), "Students fetched successfully", responseDTO)
             );
     }
 

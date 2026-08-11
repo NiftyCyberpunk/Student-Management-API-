@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.aryan.studentmanagementapi.dto.BranchRequestDTO;
 import com.aryan.studentmanagementapi.dto.BranchResponseDTO;
+import com.aryan.studentmanagementapi.dto.BranchStudentCountDTO;
 import com.aryan.studentmanagementapi.mapper.BranchMapper;
 import com.aryan.studentmanagementapi.model.Branch;
 import com.aryan.studentmanagementapi.response.ApiResponse;
@@ -42,6 +43,18 @@ public class BranchController {
             .status(HttpStatus.OK)
             .body(
                 new ApiResponse<>(HttpStatus.OK.value(), "Branches fetched successfully.", dtos)
+            );
+    }
+
+    @GetMapping("/branches/studentCount")
+    public ResponseEntity<ApiResponse<List<BranchStudentCountDTO>>> getBranchStudentCount(){
+
+        List<BranchStudentCountDTO> studentCountDtos = branchService.getStudentCount();
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(
+                new ApiResponse<>(HttpStatus.OK.value(), "Students count with branch fetched successfully.", studentCountDtos)
             );
     }
 

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.aryan.studentmanagementapi.dto.BranchRequestDTO;
+import com.aryan.studentmanagementapi.dto.BranchStudentCountDTO;
 import com.aryan.studentmanagementapi.exception.BranchAlreadyExistsException;
 import com.aryan.studentmanagementapi.exception.BranchNotFoundException;
 import com.aryan.studentmanagementapi.mapper.BranchMapper;
@@ -26,6 +27,10 @@ public class BranchService {
 
     public List<Branch> getAllBranchs(){
         return branchRepository.findAll();
+    }
+
+    public List<BranchStudentCountDTO> getStudentCount(){
+        return branchRepository.branchStudentCount();
     }
 
     public Branch addBranch(BranchRequestDTO dto){

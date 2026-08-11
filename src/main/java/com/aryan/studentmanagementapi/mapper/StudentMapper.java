@@ -3,8 +3,10 @@ package com.aryan.studentmanagementapi.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import com.aryan.studentmanagementapi.dto.StudentPageResponseDTO;
 import com.aryan.studentmanagementapi.dto.StudentRequestDTO;
 import com.aryan.studentmanagementapi.dto.StudentResponseDTO;
 import com.aryan.studentmanagementapi.dto.StudentUpdateDTO;
@@ -59,5 +61,19 @@ public class StudentMapper {
         student.setEmail(dto.getEmail());
         student.setBranch(branch);
         student.setYear(dto.getYear());
+    }
+
+    public StudentPageResponseDTO toStudentPageResponseDTO(Page<StudentResponseDTO> dto){
+        StudentPageResponseDTO pageDto = new StudentPageResponseDTO(
+            dto.getContent(),
+            dto.getNumber(),
+            dto.getSize(),
+            dto.getTotalPages(),
+            dto.getTotalElements(),
+            dto.hasNext(),
+            dto.hasPrevious()
+        );
+
+        return pageDto;
     }
 }

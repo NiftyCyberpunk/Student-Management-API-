@@ -1,7 +1,8 @@
 package com.aryan.studentmanagementapi.service;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.aryan.studentmanagementapi.dto.StudentRequestDTO;
@@ -14,6 +15,7 @@ import com.aryan.studentmanagementapi.model.Branch;
 import com.aryan.studentmanagementapi.model.Student;
 import com.aryan.studentmanagementapi.repository.BranchRepository;
 import com.aryan.studentmanagementapi.repository.StudentRepository;
+import com.aryan.studentmanagementapi.specification.StudentSpecification;
 
 import jakarta.transaction.Transactional;
 
@@ -30,8 +32,23 @@ public class StudentService {
         this.mapper = mapper;
     }
     
-    public List<Student> getAllStudents(){
-        return studentRepository.findAll();
+    public Page<Student> getAllStudents(Pageable pageable, Integer year, String branch, String name){
+
+        Specification<Student> spec = StudentSpecification.alwaysTrue();
+
+        if(year != null){
+            spec = spec.and(StudentSpecification.hasYear(year));
+        }
+
+        if(branch != null){
+            spec = spec.and(StudentSpecification.hasBranch(branch));
+        }
+
+        if(name != null){
+            spec = spec.and(StudentSpecification.hasNameLike(name));
+        }
+
+        return studentRepository.findAll(spec, pageable);
     }
 
     public Student getStudent(int registrationNo){
