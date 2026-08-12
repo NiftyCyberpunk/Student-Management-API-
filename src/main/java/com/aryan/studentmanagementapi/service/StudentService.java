@@ -6,6 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.aryan.studentmanagementapi.dto.StudentRequestDTO;
+import com.aryan.studentmanagementapi.dto.StudentSummaryDTO;
 import com.aryan.studentmanagementapi.dto.StudentUpdateDTO;
 import com.aryan.studentmanagementapi.exception.BranchNotFoundException;
 import com.aryan.studentmanagementapi.exception.StudentAlreadyExistsException;
@@ -32,7 +33,7 @@ public class StudentService {
         this.mapper = mapper;
     }
     
-    public Page<Student> getAllStudents(Pageable pageable, Integer year, String branch, String name){
+    public Page<StudentSummaryDTO> getAllStudents(Pageable pageable, Integer year, String branch, String name){
 
         Specification<Student> spec = StudentSpecification.alwaysTrue();
 
@@ -48,7 +49,7 @@ public class StudentService {
             spec = spec.and(StudentSpecification.hasNameLike(name));
         }
 
-        return studentRepository.findAll(spec, pageable);
+        return studentRepository.findAllProjected(spec, pageable);
     }
 
     public Student getStudent(int registrationNo){

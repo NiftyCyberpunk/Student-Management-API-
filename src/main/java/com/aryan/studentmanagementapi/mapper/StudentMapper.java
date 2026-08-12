@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.aryan.studentmanagementapi.dto.StudentPageResponseDTO;
 import com.aryan.studentmanagementapi.dto.StudentRequestDTO;
 import com.aryan.studentmanagementapi.dto.StudentResponseDTO;
+import com.aryan.studentmanagementapi.dto.StudentSummaryDTO;
 import com.aryan.studentmanagementapi.dto.StudentUpdateDTO;
 import com.aryan.studentmanagementapi.model.Branch;
 import com.aryan.studentmanagementapi.model.Student;
@@ -63,8 +64,8 @@ public class StudentMapper {
         student.setYear(dto.getYear());
     }
 
-    public StudentPageResponseDTO toStudentPageResponseDTO(Page<StudentResponseDTO> dto){
-        StudentPageResponseDTO pageDto = new StudentPageResponseDTO(
+    public StudentPageResponseDTO toStudentPageResponseDTO(Page<StudentSummaryDTO> dto){
+        StudentPageResponseDTO repsonseDto = new StudentPageResponseDTO(
             dto.getContent(),
             dto.getNumber(),
             dto.getSize(),
@@ -73,7 +74,6 @@ public class StudentMapper {
             dto.hasNext(),
             dto.hasPrevious()
         );
-
-        return pageDto;
+        return repsonseDto;
     }
 }

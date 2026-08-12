@@ -1,9 +1,8 @@
 package com.aryan.studentmanagementapi.dto;
 
 import java.util.List;
-
 public class StudentPageResponseDTO {
-    private List<StudentResponseDTO> students;
+    private List<StudentSummaryDTO> students;
     private int currentPage;
     private int pageSize;
     private int totalPages;
@@ -15,7 +14,7 @@ public class StudentPageResponseDTO {
 
     }
 
-    public StudentPageResponseDTO(List<StudentResponseDTO> students, int currentPage, int pageSize, int totalPages, long totalStudents, boolean hasNext, boolean hasPrevious){
+    public StudentPageResponseDTO(List<StudentSummaryDTO> students, int currentPage, int pageSize, int totalPages, long totalStudents, boolean hasNext, boolean hasPrevious){
         this.students = students;
         this.currentPage = currentPage;
         this.pageSize = pageSize;
@@ -25,7 +24,7 @@ public class StudentPageResponseDTO {
         this.hasPrevious = hasPrevious;
     }
 
-    public List<StudentResponseDTO> getStudents() {
+    public List<StudentSummaryDTO> getStudents() {
         return students;
     }
 

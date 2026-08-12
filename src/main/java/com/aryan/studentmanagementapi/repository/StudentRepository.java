@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 import com.aryan.studentmanagementapi.model.Student;
 
 @Repository
-public interface StudentRepository extends JpaRepository<Student, Integer>, JpaSpecificationExecutor<Student> {
+public interface StudentRepository extends JpaRepository<Student, Integer>, JpaSpecificationExecutor<Student>, CustomStudentRepository {
 
     @Query("""
         SELECT s

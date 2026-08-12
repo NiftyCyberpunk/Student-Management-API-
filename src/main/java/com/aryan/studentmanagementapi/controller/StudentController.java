@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aryan.studentmanagementapi.dto.StudentResponseDTO;
+import com.aryan.studentmanagementapi.dto.StudentSummaryDTO;
 import com.aryan.studentmanagementapi.dto.StudentUpdateDTO;
 import com.aryan.studentmanagementapi.dto.StudentPageResponseDTO;
 import com.aryan.studentmanagementapi.dto.StudentRequestDTO;
@@ -42,18 +43,14 @@ public class StudentController {
 
     @GetMapping("/students")
     public ResponseEntity<ApiResponse<StudentPageResponseDTO>> getStudents(Pageable pageable, @RequestParam(required = false) Integer year, @RequestParam(required = false) String branch, @RequestParam(required = false) String name){
-        Page<Student> studentsPage =  studentService.getAllStudents(pageable, year, branch, name);
+        Page<StudentSummaryDTO> studentsPageDto =  studentService.getAllStudents(pageable, year, branch, name);
 
-        Page<StudentResponseDTO> dtos = studentsPage.map(student -> {
-            return mapper.toStudentResponseDTO(student);
-        });
-
-        StudentPageResponseDTO responseDTO = mapper.toStudentPageResponseDTO(dtos);
+        StudentPageResponseDTO dto = mapper.toStudentPageResponseDTO(studentsPageDto);
 
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(
-                new ApiResponse<>(HttpStatus.OK.value(), "Students fetched successfully", responseDTO)
+                new ApiResponse<>(HttpStatus.OK.value(), "Students fetched successfully", dto)
             );
     }
 
