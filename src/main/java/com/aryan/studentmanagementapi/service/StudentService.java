@@ -5,8 +5,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.aryan.studentmanagementapi.dto.StudentPageResponseDTO;
 import com.aryan.studentmanagementapi.dto.StudentPatchDTO;
 import com.aryan.studentmanagementapi.dto.StudentRequestDTO;
+import com.aryan.studentmanagementapi.dto.StudentResponseDTO;
 import com.aryan.studentmanagementapi.dto.StudentSummaryDTO;
 import com.aryan.studentmanagementapi.exception.BranchNotFoundException;
 import com.aryan.studentmanagementapi.exception.StudentAlreadyExistsException;
@@ -33,7 +35,7 @@ public class StudentService {
         this.mapper = mapper;
     }
     
-    public Page<StudentSummaryDTO> getAllStudents(Pageable pageable, Integer year, String branch, String name){
+    public StudentPageResponseDTO getAllStudents(Pageable pageable, Integer year, String branch, String name){
 
         Specification<Student> spec = StudentSpecification.alwaysTrue();
 
@@ -49,17 +51,21 @@ public class StudentService {
             spec = spec.and(StudentSpecification.hasNameLike(name));
         }
 
-        return studentRepository.findAllProjected(spec, pageable);
+        Page<StudentSummaryDTO> studentsPageDto =  studentRepository.findAllProjected(spec, pageable);
+
+        return mapper.toStudentPageResponseDTO(studentsPageDto);
     }
 
-    public Student getStudent(int registrationNo){
-        return  studentRepository
+    public StudentResponseDTO getStudent(int registrationNo){
+        Student student =   studentRepository
             .findById(registrationNo)
             .orElseThrow(() -> new StudentNotFoundException(registrationNo));
+
+        return mapper.toStudentResponseDTO(student);
     }
 
     @Transactional
-    public Student addStudent(StudentRequestDTO dto){
+    public StudentResponseDTO addStudent(StudentRequestDTO dto){
         studentRepository
             .findByEmail(dto.getEmail())
             .ifPresent(existingStudent -> {
@@ -75,11 +81,13 @@ public class StudentService {
         
         Student student = mapper.toStudent(dto, branch);
     
-        return studentRepository.save(student);
+        Student savedStudent =  studentRepository.save(student);
+
+        return mapper.toStudentResponseDTO(savedStudent);
     }
 
     @Transactional
-    public Student updateStudentDetails(int registrationNo, StudentPatchDTO dto){
+    public StudentResponseDTO updateStudentDetails(int registrationNo, StudentPatchDTO dto){
 
         Student student = studentRepository
             .findById(registrationNo)
@@ -89,7 +97,7 @@ public class StudentService {
             studentRepository
                 .findByEmail(dto.getEmail())
                 .ifPresent(foundStudent -> {
-                        if(foundStudent.getRegistrationNo().equals(student.getRegistrationNo())){
+                        if(!foundStudent.getRegistrationNo().equals(student.getRegistrationNo())){
                             throw new StudentAlreadyExistsException(
                                 "Student with email " + dto.getEmail() + " already exists."
                             );
@@ -109,7 +117,7 @@ public class StudentService {
         
         mapper.updateStudent(student, dto, branch);
 
-        return student;
+        return mapper.toStudentResponseDTO(student);
     }
 
     @Transactional

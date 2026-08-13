@@ -1,6 +1,5 @@
 package com.aryan.studentmanagementapi.controller;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aryan.studentmanagementapi.dto.StudentResponseDTO;
-import com.aryan.studentmanagementapi.dto.StudentSummaryDTO;
 import com.aryan.studentmanagementapi.dto.StudentPageResponseDTO;
 import com.aryan.studentmanagementapi.dto.StudentPatchDTO;
 import com.aryan.studentmanagementapi.dto.StudentRequestDTO;
 import com.aryan.studentmanagementapi.mapper.StudentMapper;
-import com.aryan.studentmanagementapi.model.Student;
 import com.aryan.studentmanagementapi.response.ApiResponse;
 import com.aryan.studentmanagementapi.service.StudentService;
 
@@ -29,11 +26,9 @@ import jakarta.validation.Valid;
 public class StudentController {
 
     private final StudentService studentService;
-    private final StudentMapper mapper;
 
     public StudentController(StudentService studentService, StudentMapper mapper){
         this.studentService = studentService;
-        this.mapper = mapper;
     }
 
     @GetMapping("/hello")
@@ -43,9 +38,8 @@ public class StudentController {
 
     @GetMapping("/students")
     public ResponseEntity<ApiResponse<StudentPageResponseDTO>> getStudents(Pageable pageable, @RequestParam(required = false) Integer year, @RequestParam(required = false) String branch, @RequestParam(required = false) String name){
-        Page<StudentSummaryDTO> studentsPageDto =  studentService.getAllStudents(pageable, year, branch, name);
 
-        StudentPageResponseDTO dto = mapper.toStudentPageResponseDTO(studentsPageDto);
+        StudentPageResponseDTO dto = studentService.getAllStudents(pageable, year, branch, name);
 
         return ResponseEntity
             .status(HttpStatus.OK)
@@ -56,9 +50,8 @@ public class StudentController {
 
     @GetMapping("/students/{registrationNo}")
     public ResponseEntity<ApiResponse<StudentResponseDTO>> getStudent(@PathVariable int registrationNo){
-        Student student =  studentService.getStudent(registrationNo);
 
-        StudentResponseDTO dto = mapper.toStudentResponseDTO(student);
+        StudentResponseDTO dto = studentService.getStudent(registrationNo);
 
         return ResponseEntity
             .status(HttpStatus.OK)
@@ -70,9 +63,7 @@ public class StudentController {
     @PostMapping("/students")
     public ResponseEntity<ApiResponse<StudentResponseDTO>> addStudent(@Valid @RequestBody StudentRequestDTO dto){
 
-        Student savedStudent = studentService.addStudent(dto);
-
-        StudentResponseDTO responseDto = mapper.toStudentResponseDTO(savedStudent);
+        StudentResponseDTO responseDto = studentService.addStudent(dto);
 
         return ResponseEntity
             .status(HttpStatus.CREATED)
@@ -83,10 +74,8 @@ public class StudentController {
 
     @PatchMapping("/students/{registrationNo}")
     public ResponseEntity<ApiResponse<StudentResponseDTO>> updateStudent(@PathVariable int registrationNo, @Valid @RequestBody StudentPatchDTO dto){
-
-        Student updatedStudent = studentService.updateStudentDetails(registrationNo, dto);
         
-        StudentResponseDTO responseDto = mapper.toStudentResponseDTO(updatedStudent);
+        StudentResponseDTO responseDto = studentService.updateStudentDetails(registrationNo, dto);
 
         return ResponseEntity
             .status(HttpStatus.OK)

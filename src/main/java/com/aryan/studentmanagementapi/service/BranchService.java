@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.aryan.studentmanagementapi.dto.BranchRequestDTO;
+import com.aryan.studentmanagementapi.dto.BranchResponseDTO;
 import com.aryan.studentmanagementapi.dto.BranchStudentCountDTO;
 import com.aryan.studentmanagementapi.exception.BranchAlreadyExistsException;
 import com.aryan.studentmanagementapi.exception.BranchNotFoundException;
@@ -33,7 +34,8 @@ public class BranchService {
         return branchRepository.branchStudentCount();
     }
 
-    public Branch addBranch(BranchRequestDTO dto){
+    @Transactional
+    public BranchResponseDTO addBranch(BranchRequestDTO dto){
 
         branchRepository
             .findByName(dto.getName())
@@ -46,11 +48,11 @@ public class BranchService {
         
         Branch branch = mapper.toBranch(dto);
 
-        return branchRepository.save(branch);
+        return mapper.toBranchResponseDTO(branch);
     }
 
     @Transactional
-    public Branch updateBranch(String name, BranchRequestDTO dto){
+    public BranchResponseDTO updateBranch(String name, BranchRequestDTO dto){
 
         Branch branch = branchRepository
             .findByName(name)
@@ -68,9 +70,10 @@ public class BranchService {
         
         mapper.updateMapper(branch, dto);
 
-        return branch;
+        return mapper.toBranchResponseDTO(branch);
     }
 
+    @Transactional
     public void deleteBranch(String name){
         
         Branch branch = branchRepository

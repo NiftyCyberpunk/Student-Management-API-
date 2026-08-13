@@ -61,9 +61,7 @@ public class BranchController {
     @PostMapping("/branches")
     public ResponseEntity<ApiResponse<BranchResponseDTO>> addBranch(@Valid @RequestBody BranchRequestDTO dto){
 
-        Branch savedBranch = branchService.addBranch(dto);
-
-        BranchResponseDTO responseDto = mapper.toBranchResponseDTO(savedBranch);
+        BranchResponseDTO responseDto = branchService.addBranch(dto);
 
         return ResponseEntity
             .status(HttpStatus.CREATED)
@@ -74,9 +72,8 @@ public class BranchController {
 
     @PutMapping("/branches/{name}")
     public ResponseEntity<ApiResponse<BranchResponseDTO>> updateBranch(@PathVariable String name, @Valid @RequestBody BranchRequestDTO dto){
-        Branch branch = branchService.updateBranch(name, dto);
 
-        BranchResponseDTO responseDto = mapper.toBranchResponseDTO(branch);
+        BranchResponseDTO responseDto = branchService.updateBranch(name, dto);
 
         return ResponseEntity
             .status(HttpStatus.OK)
