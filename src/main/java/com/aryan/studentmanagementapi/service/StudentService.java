@@ -5,9 +5,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.aryan.studentmanagementapi.dto.StudentPatchDTO;
 import com.aryan.studentmanagementapi.dto.StudentRequestDTO;
 import com.aryan.studentmanagementapi.dto.StudentSummaryDTO;
-import com.aryan.studentmanagementapi.dto.StudentUpdateDTO;
 import com.aryan.studentmanagementapi.exception.BranchNotFoundException;
 import com.aryan.studentmanagementapi.exception.StudentAlreadyExistsException;
 import com.aryan.studentmanagementapi.exception.StudentNotFoundException;
@@ -58,6 +58,7 @@ public class StudentService {
             .orElseThrow(() -> new StudentNotFoundException(registrationNo));
     }
 
+    @Transactional
     public Student addStudent(StudentRequestDTO dto){
         studentRepository
             .findByEmail(dto.getEmail())
@@ -69,9 +70,7 @@ public class StudentService {
             );
         Branch branch = branchRepository
             .findByName(dto.getBranch())
-            .orElseThrow(() -> new BranchNotFoundException(
-                    "The Branch name " + dto.getBranch() + " not exists."
-                )
+            .orElseThrow(() -> new BranchNotFoundException(dto.getBranch())
             );
         
         Student student = mapper.toStudent(dto, branch);
@@ -80,35 +79,40 @@ public class StudentService {
     }
 
     @Transactional
-    public Student updateStudentDetails(int registrationNo, StudentUpdateDTO dto){
+    public Student updateStudentDetails(int registrationNo, StudentPatchDTO dto){
 
         Student student = studentRepository
             .findById(registrationNo)
             .orElseThrow(() -> new StudentNotFoundException(registrationNo));
 
-        studentRepository
-            .findByEmail(dto.getEmail())
-            .ifPresent(foundStudent -> {
-                    if(foundStudent.getRegistrationNo() != student.getRegistrationNo()){
-                        throw new StudentAlreadyExistsException(
-                            "Student with email " + dto.getEmail() + " already exists."
-                        );
-                    }
-                } 
-            );
+        if(dto.getEmail() != null){
+            studentRepository
+                .findByEmail(dto.getEmail())
+                .ifPresent(foundStudent -> {
+                        if(foundStudent.getRegistrationNo().equals(student.getRegistrationNo())){
+                            throw new StudentAlreadyExistsException(
+                                "Student with email " + dto.getEmail() + " already exists."
+                            );
+                        }
+                    } 
+                );
+        }
 
-        Branch branch = branchRepository
-            .findByName(dto.getBranch())
-            .orElseThrow(() -> new BranchNotFoundException(
-                    "The Branch name " + dto.getBranch() + " not exists."
-                )
-            );
+        Branch branch = null;
+
+        if(dto.getBranch() != null){
+            branch = branchRepository
+                .findByName(dto.getBranch())
+                .orElseThrow(() -> new BranchNotFoundException(dto.getBranch())
+                );
+        }
         
         mapper.updateStudent(student, dto, branch);
 
         return student;
     }
 
+    @Transactional
     public void deleteStudent(int registrationNo){
         Student student = studentRepository
             .findById(registrationNo)

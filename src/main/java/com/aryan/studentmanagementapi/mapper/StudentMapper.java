@@ -7,10 +7,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import com.aryan.studentmanagementapi.dto.StudentPageResponseDTO;
+import com.aryan.studentmanagementapi.dto.StudentPatchDTO;
 import com.aryan.studentmanagementapi.dto.StudentRequestDTO;
 import com.aryan.studentmanagementapi.dto.StudentResponseDTO;
 import com.aryan.studentmanagementapi.dto.StudentSummaryDTO;
-import com.aryan.studentmanagementapi.dto.StudentUpdateDTO;
 import com.aryan.studentmanagementapi.model.Branch;
 import com.aryan.studentmanagementapi.model.Student;
 
@@ -57,11 +57,22 @@ public class StudentMapper {
         return dtos;
     }
 
-    public void updateStudent(Student student, StudentUpdateDTO dto, Branch branch){
-        student.setName(dto.getName());
-        student.setEmail(dto.getEmail());
-        student.setBranch(branch);
-        student.setYear(dto.getYear());
+    public void updateStudent(Student student, StudentPatchDTO dto, Branch branch){
+        if(dto.getName() != null){
+            student.setName(dto.getName());
+        }
+
+        if(dto.getEmail() != null){
+            student.setEmail(dto.getEmail());
+        }
+
+        if(branch != null){
+            student.setBranch(branch);
+        }
+
+        if(dto.getYear() != null){
+            student.setYear(dto.getYear());
+        }
     }
 
     public StudentPageResponseDTO toStudentPageResponseDTO(Page<StudentSummaryDTO> dto){

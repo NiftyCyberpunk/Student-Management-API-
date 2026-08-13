@@ -6,17 +6,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aryan.studentmanagementapi.dto.StudentResponseDTO;
 import com.aryan.studentmanagementapi.dto.StudentSummaryDTO;
-import com.aryan.studentmanagementapi.dto.StudentUpdateDTO;
 import com.aryan.studentmanagementapi.dto.StudentPageResponseDTO;
+import com.aryan.studentmanagementapi.dto.StudentPatchDTO;
 import com.aryan.studentmanagementapi.dto.StudentRequestDTO;
 import com.aryan.studentmanagementapi.mapper.StudentMapper;
 import com.aryan.studentmanagementapi.model.Student;
@@ -81,8 +81,8 @@ public class StudentController {
             );
     } 
 
-    @PutMapping("/students/{registrationNo}")
-    public ResponseEntity<ApiResponse<StudentResponseDTO>> updateStudent(@PathVariable int registrationNo, @Valid @RequestBody StudentUpdateDTO dto){
+    @PatchMapping("/students/{registrationNo}")
+    public ResponseEntity<ApiResponse<StudentResponseDTO>> updateStudent(@PathVariable int registrationNo, @Valid @RequestBody StudentPatchDTO dto){
 
         Student updatedStudent = studentService.updateStudentDetails(registrationNo, dto);
         
