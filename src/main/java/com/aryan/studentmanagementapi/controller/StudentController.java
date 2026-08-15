@@ -31,6 +31,11 @@ public class StudentController {
         this.studentService = studentService;
     }
 
+    @GetMapping("/admin")
+    public String adminTest() {
+        return "Hello admin";
+    }
+
     @GetMapping("/hello")
     public String hello() {
         return "Hello Spring Boot!";
