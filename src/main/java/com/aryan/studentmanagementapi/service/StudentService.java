@@ -3,6 +3,7 @@ package com.aryan.studentmanagementapi.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.aryan.studentmanagementapi.dto.StudentPageResponseDTO;
@@ -13,11 +14,15 @@ import com.aryan.studentmanagementapi.dto.StudentSummaryDTO;
 import com.aryan.studentmanagementapi.exception.BranchNotFoundException;
 import com.aryan.studentmanagementapi.exception.StudentAlreadyExistsException;
 import com.aryan.studentmanagementapi.exception.StudentNotFoundException;
+import com.aryan.studentmanagementapi.exception.UserNotFoundException;
 import com.aryan.studentmanagementapi.mapper.StudentMapper;
 import com.aryan.studentmanagementapi.model.Branch;
+import com.aryan.studentmanagementapi.model.Role;
 import com.aryan.studentmanagementapi.model.Student;
+import com.aryan.studentmanagementapi.model.User;
 import com.aryan.studentmanagementapi.repository.BranchRepository;
 import com.aryan.studentmanagementapi.repository.StudentRepository;
+import com.aryan.studentmanagementapi.repository.UserRepository;
 import com.aryan.studentmanagementapi.specification.StudentSpecification;
 
 import jakarta.transaction.Transactional;
@@ -27,11 +32,13 @@ public class StudentService {
     
     private final StudentRepository studentRepository;
     private final BranchRepository branchRepository;
+    private final UserRepository userRepository;
     private final StudentMapper mapper;
 
-    public StudentService(StudentRepository studentRepository, StudentMapper mapper, BranchRepository branchRepository){
+    public StudentService(StudentRepository studentRepository, StudentMapper mapper, BranchRepository branchRepository, UserRepository userRepository){
         this.studentRepository = studentRepository;
         this.branchRepository = branchRepository;
+        this.userRepository = userRepository;
         this.mapper = mapper;
     }
     
@@ -56,8 +63,19 @@ public class StudentService {
         return mapper.toStudentPageResponseDTO(studentsPageDto);
     }
 
-    public StudentResponseDTO getStudent(int registrationNo){
-        Student student =   studentRepository
+    public StudentResponseDTO getStudent(int registrationNo, String currentUsername){
+
+        User user = userRepository
+            .findByUsername(currentUsername)
+            .orElseThrow(() -> new UserNotFoundException());
+
+        if(user.getRole() == Role.STUDENT){
+            if(user.getStudent().getRegistrationNo().equals(registrationNo)){
+                throw new AccessDeniedException("You do not have access to this student");
+            }
+        }
+
+        Student student = studentRepository
             .findById(registrationNo)
             .orElseThrow(() -> new StudentNotFoundException(registrationNo));
 

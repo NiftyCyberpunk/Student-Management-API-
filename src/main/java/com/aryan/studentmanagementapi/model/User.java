@@ -7,6 +7,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class User {
@@ -23,6 +25,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @OneToOne
+    @JoinColumn(name = "student_id")
+    private Student student;
 
     public User() {
 
@@ -50,6 +56,10 @@ public class User {
         return role;
     }
 
+    public Student getStudent() {
+        return student;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -60,5 +70,9 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 }

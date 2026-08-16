@@ -10,18 +10,23 @@ import org.springframework.transaction.annotation.Transactional;
 import com.aryan.studentmanagementapi.dto.AuthResponseDTO;
 import com.aryan.studentmanagementapi.dto.LoginRequestDTO;
 import com.aryan.studentmanagementapi.dto.RefreshTokenRequestDTO;
-import com.aryan.studentmanagementapi.dto.RegisterRequestDTO;
+import com.aryan.studentmanagementapi.dto.StudentRegisterRequestDTO;
+import com.aryan.studentmanagementapi.exception.StudentNotFoundException;
+import com.aryan.studentmanagementapi.exception.UserAlreadyExistsException;
 import com.aryan.studentmanagementapi.exception.UserNotFoundException;
 import com.aryan.studentmanagementapi.exception.UsernameAlreadyExistsException;
 import com.aryan.studentmanagementapi.model.RefreshToken;
 import com.aryan.studentmanagementapi.model.Role;
+import com.aryan.studentmanagementapi.model.Student;
 import com.aryan.studentmanagementapi.model.User;
+import com.aryan.studentmanagementapi.repository.StudentRepository;
 import com.aryan.studentmanagementapi.repository.UserRepository;
 
 @Service
 public class AuthService {
     
     private final UserRepository userRepository;
+    private final StudentRepository studentRepository;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
     private final PasswordEncoder passwordEncoder;
@@ -31,8 +36,9 @@ public class AuthService {
         return new AuthResponseDTO(accessToken, refreshToken);
     }
 
-    public AuthService(UserRepository userRepository, JwtService jwtService, RefreshTokenService refreshTokenService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager){
+    public AuthService(UserRepository userRepository, StudentRepository studentRepository, JwtService jwtService, RefreshTokenService refreshTokenService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager){
         this.userRepository = userRepository;
+        this.studentRepository = studentRepository;
         this.jwtService = jwtService;
         this.refreshTokenService = refreshTokenService;
         this.passwordEncoder = passwordEncoder;
@@ -40,20 +46,35 @@ public class AuthService {
     }
 
     @Transactional
-    public AuthResponseDTO registerUser(RegisterRequestDTO registerRequest) {
+    public AuthResponseDTO registerStudent(StudentRegisterRequestDTO studentRegisterRequest){
+
+        Student student = studentRepository
+            .findById(studentRegisterRequest.getRegistrationNumber())
+            .orElseThrow(() -> 
+                new StudentNotFoundException(studentRegisterRequest.getRegistrationNumber())
+        );
 
         userRepository
-            .findByUsername(registerRequest.getUsername())
+            .findByStudent(student)
+            .ifPresent(existingUser -> {
+                    throw new UserAlreadyExistsException();
+                }
+            );
+        
+        userRepository
+            .findByUsername(studentRegisterRequest.getUsername())
             .ifPresent(existingUser -> {
                 throw new UsernameAlreadyExistsException();
             }
         );
 
         User user = new User(
-            registerRequest.getUsername(),
-            passwordEncoder.encode(registerRequest.getPassword()),
+            studentRegisterRequest.getUsername(),
+            passwordEncoder.encode(studentRegisterRequest.getPassword()),
             Role.STUDENT
         );
+
+        user.setStudent(student);
 
         userRepository.save(user);
 

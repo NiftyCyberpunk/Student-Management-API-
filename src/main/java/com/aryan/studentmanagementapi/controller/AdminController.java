@@ -4,11 +4,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.aryan.studentmanagementapi.dto.AuthResponseDTO;
 import com.aryan.studentmanagementapi.dto.ChangeRoleRequestDTO;
+import com.aryan.studentmanagementapi.dto.RegisterRequestDTO;
 import com.aryan.studentmanagementapi.service.AdminService;
 
 @RestController
@@ -19,6 +22,18 @@ public class AdminController {
 
     public AdminController(AdminService adminService){
         this.adminService = adminService;
+    }
+
+    @PostMapping("/users/admin")
+    public AuthResponseDTO registerAdmin(@RequestBody RegisterRequestDTO registerRequest) {
+        
+        return adminService.registerAdmin(registerRequest);
+    }
+
+    @PostMapping("/users/teacher")
+    public AuthResponseDTO registerTeacher(@RequestBody RegisterRequestDTO registerRequest) {
+        
+        return adminService.registerTeacher(registerRequest);
     }
     
     @PatchMapping("/users/{username}/role")

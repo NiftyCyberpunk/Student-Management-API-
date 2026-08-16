@@ -3,6 +3,7 @@ package com.aryan.studentmanagementapi.controller;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -31,11 +32,6 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @GetMapping("/admin")
-    public String adminTest() {
-        return "Hello admin";
-    }
-
     @GetMapping("/hello")
     public String hello() {
         return "Hello Spring Boot!";
@@ -54,9 +50,9 @@ public class StudentController {
     }
 
     @GetMapping("/students/{registrationNo}")
-    public ResponseEntity<ApiResponse<StudentResponseDTO>> getStudent(@PathVariable int registrationNo){
+    public ResponseEntity<ApiResponse<StudentResponseDTO>> getStudent(@PathVariable int registrationNo, Authentication authentication){
 
-        StudentResponseDTO dto = studentService.getStudent(registrationNo);
+        StudentResponseDTO dto = studentService.getStudent(registrationNo, authentication.getName());
 
         return ResponseEntity
             .status(HttpStatus.OK)
