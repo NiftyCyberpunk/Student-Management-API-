@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
     
     @ExceptionHandler(StudentNotFoundException.class)
-    public ResponseEntity<ApiError> handleStudentNotFound(StudentNotFoundException ex){
+    public ResponseEntity<ApiError> handleStudentNotFound(StudentNotFoundException ex) {
         ApiError error = new ApiError(HttpStatus.NOT_FOUND.value(), ex.getMessage(), Collections.emptyList());
 
         return ResponseEntity                    
@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(StudentAlreadyExistsException.class)
-    public ResponseEntity<ApiError> handleStudentAlreadyExists(StudentAlreadyExistsException ex){
+    public ResponseEntity<ApiError> handleStudentAlreadyExists(StudentAlreadyExistsException ex) {
         ApiError error = new ApiError(HttpStatus.CONFLICT.value(), ex.getMessage(), Collections.emptyList());
 
         return ResponseEntity                    
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BranchNotFoundException.class)
-    public ResponseEntity<ApiError> BranchNotFound(BranchNotFoundException ex){
+    public ResponseEntity<ApiError> BranchNotFound(BranchNotFoundException ex) {
         ApiError error = new ApiError(HttpStatus.NOT_FOUND.value(), ex.getMessage(), Collections.emptyList());
 
         return ResponseEntity                    
@@ -52,8 +52,17 @@ public class GlobalExceptionHandler {
                     .body(error);
     }
 
+    @ExceptionHandler(UsernameAlreadyExistsException.class)
+    public ResponseEntity<ApiError> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException ex) {
+        ApiError error = new ApiError(HttpStatus.CONFLICT.value(), ex.getMessage(), Collections.emptyList());
+
+        return ResponseEntity                    
+                    .status(HttpStatus.CONFLICT)
+                    .body(error);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiError> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex){
+    public ResponseEntity<ApiError> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
 
         List<String> errors = new ArrayList<>();
 
