@@ -78,4 +78,12 @@ public class RefreshTokenService {
 
         refreshTokenRepository.delete(refreshToken);
     }
+
+    public void deleteRefreshTokenByUser(User user){
+
+        refreshTokenRepository
+            .findByUser(user)
+            .ifPresent(refreshTokenRepository::delete);
+        
+    }
 }

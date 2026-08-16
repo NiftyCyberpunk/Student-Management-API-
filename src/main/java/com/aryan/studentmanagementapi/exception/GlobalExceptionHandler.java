@@ -1,6 +1,7 @@
 package com.aryan.studentmanagementapi.exception;
 
 import java.util.List;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -102,6 +103,33 @@ public class GlobalExceptionHandler {
         }
 
         ApiError error = new ApiError(HttpStatus.BAD_REQUEST.value(), "Validation failed", errors);
+
+        return ResponseEntity                    
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(error);
+    }
+
+    @ExceptionHandler(InvalidRoleException.class)
+    public ResponseEntity<ApiError> handleRoleNotFoundException(InvalidRoleException ex){
+        ApiError error = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), Collections.emptyList());
+
+        return ResponseEntity                    
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(error);
+    }
+
+    @ExceptionHandler(LastAdminException.class)
+    public ResponseEntity<ApiError> handleLastAdminException(LastAdminException ex){
+        ApiError error = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), Collections.emptyList());
+
+        return ResponseEntity                    
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(error);
+    }
+
+    @ExceptionHandler(AdminSelfDeleteException.class)
+    public ResponseEntity<ApiError> handleAdminSelfDeleteException(AdminSelfDeleteException ex){
+        ApiError error = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), Collections.emptyList());
 
         return ResponseEntity                    
                     .status(HttpStatus.BAD_REQUEST)

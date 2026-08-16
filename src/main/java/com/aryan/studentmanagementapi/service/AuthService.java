@@ -14,6 +14,7 @@ import com.aryan.studentmanagementapi.dto.RegisterRequestDTO;
 import com.aryan.studentmanagementapi.exception.UserNotFoundException;
 import com.aryan.studentmanagementapi.exception.UsernameAlreadyExistsException;
 import com.aryan.studentmanagementapi.model.RefreshToken;
+import com.aryan.studentmanagementapi.model.Role;
 import com.aryan.studentmanagementapi.model.User;
 import com.aryan.studentmanagementapi.repository.UserRepository;
 
@@ -51,7 +52,7 @@ public class AuthService {
         User user = new User(
             registerRequest.getUsername(),
             passwordEncoder.encode(registerRequest.getPassword()),
-            "STUDENT"
+            Role.STUDENT
         );
 
         userRepository.save(user);
