@@ -61,6 +61,33 @@ public class GlobalExceptionHandler {
                     .body(error);
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiError> handleUserNotFoundException(UserNotFoundException ex){
+        ApiError error = new ApiError(HttpStatus.NOT_FOUND.value(), ex.getMessage(), Collections.emptyList());
+
+        return ResponseEntity                    
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(error);
+    }
+
+    @ExceptionHandler(RefreshTokenExpiredException.class)
+    public ResponseEntity<ApiError> handleRefreshTokenExpiredException(RefreshTokenExpiredException ex){
+        ApiError error = new ApiError(HttpStatus.UNAUTHORIZED.value(), ex.getMessage(), Collections.emptyList());
+
+        return ResponseEntity                    
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(error);
+    }
+
+    @ExceptionHandler(RefreshTokenRevokedException.class)
+    public ResponseEntity<ApiError> handleRefreshTokenRevokedException(RefreshTokenRevokedException ex){
+        ApiError error = new ApiError(HttpStatus.UNAUTHORIZED.value(), ex.getMessage(), Collections.emptyList());
+
+        return ResponseEntity                    
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(error);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
 

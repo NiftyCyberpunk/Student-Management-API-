@@ -15,6 +15,9 @@ import io.jsonwebtoken.security.Keys;
 public class JwtService {
     
     private final SecretKey secretKey;
+    
+    @Value("${access_token_expiry}")
+    private long accessTokenExpiry;
 
     public JwtService(@Value("${jwt.secret}") String secret) {
         byte[] KeyBytes = Decoders.BASE64.decode(secret);
@@ -27,7 +30,7 @@ public class JwtService {
         return Jwts.builder()
             .subject(username)
             .issuedAt(new Date())
-            .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15))
+            .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * accessTokenExpiry))
             .signWith(secretKey)
             .compact();
     }

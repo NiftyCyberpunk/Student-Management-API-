@@ -1,0 +1,6 @@
+export DB_URL="your db url"
+export DB_USERNAME="your db username"
+export DB_PASSWORD="your db password"
+export JWT_SECRET="your jwt secret key"
+export REFRESH_TOKEN_EXPIRY="your token expiry days"
+export ACCESS_TOKEN_EXPIRY="your token expiry minutes"

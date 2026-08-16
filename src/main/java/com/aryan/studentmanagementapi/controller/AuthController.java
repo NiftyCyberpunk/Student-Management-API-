@@ -1,48 +1,47 @@
 package com.aryan.studentmanagementapi.controller;
 
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.aryan.studentmanagementapi.dto.AuthResponseDTO;
 import com.aryan.studentmanagementapi.dto.LoginRequestDTO;
+import com.aryan.studentmanagementapi.dto.RefreshTokenRequestDTO;
 import com.aryan.studentmanagementapi.dto.RegisterRequestDTO;
 import com.aryan.studentmanagementapi.service.AuthService;
-import com.aryan.studentmanagementapi.service.JwtService;
-
 @RestController
 public class AuthController {
     
     private final AuthService authService;
-    private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
 
-    public AuthController(AuthService authService, AuthenticationManager authenticationManager, JwtService jwtService){
+    public AuthController(AuthService authService){
         this.authService = authService;
-        this.authenticationManager = authenticationManager;
-        this.jwtService = jwtService;
-    }
-
-    @PostMapping("/auth/login")
-    public String login(@RequestBody LoginRequestDTO loginRequest) {
-        
-        Authentication authentication = 
-            authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    loginRequest.getUsername(), 
-                    loginRequest.getPassword()
-                )
-            );
-        
-
-            return jwtService.generateToken(authentication.getName());
     }
 
     @PostMapping("/auth/register")
-    public String register(@RequestBody RegisterRequestDTO registerRequest) {
-
+    public AuthResponseDTO register(@RequestBody RegisterRequestDTO registerRequest) {
+        
         return authService.registerUser(registerRequest);
+    }
+
+    @PostMapping("/auth/login")
+    public AuthResponseDTO login(@RequestBody LoginRequestDTO loginRequest) {
+        
+        return authService.loginUser(loginRequest);
+    }
+
+    @PostMapping("/auth/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void logout(@RequestBody RefreshTokenRequestDTO refreshTokenRequest) {
+
+        authService.logoutUser(refreshTokenRequest);
+    }
+
+    @PostMapping("/auth/refresh")
+    public AuthResponseDTO refreshTokens(@RequestBody RefreshTokenRequestDTO refreshTokenRequest) {
+        System.out.println(refreshTokenRequest.getRefreshToken());
+        return authService.refreshTokens(refreshTokenRequest);
     }
 }
