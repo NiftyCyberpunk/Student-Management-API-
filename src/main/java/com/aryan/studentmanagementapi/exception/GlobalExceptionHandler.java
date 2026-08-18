@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BranchAlreadyExistsException.class)
-    public ResponseEntity<ApiError> handleBranchAlreadyExistsException(BranchAlreadyExistsException ex){
+    public ResponseEntity<ApiError> handleBranchAlreadyExistsException(BranchAlreadyExistsException ex) {
         ApiError error = new ApiError(HttpStatus.CONFLICT.value(), ex.getMessage(), Collections.emptyList());
 
         return ResponseEntity                    
@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ApiError> handleUserNotFoundException(UserNotFoundException ex){
+    public ResponseEntity<ApiError> handleUserNotFoundException(UserNotFoundException ex) {
         ApiError error = new ApiError(HttpStatus.NOT_FOUND.value(), ex.getMessage(), Collections.emptyList());
 
         return ResponseEntity                    
@@ -81,7 +81,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(RefreshTokenExpiredException.class)
-    public ResponseEntity<ApiError> handleRefreshTokenExpiredException(RefreshTokenExpiredException ex){
+    public ResponseEntity<ApiError> handleRefreshTokenExpiredException(RefreshTokenExpiredException ex) {
         ApiError error = new ApiError(HttpStatus.UNAUTHORIZED.value(), ex.getMessage(), Collections.emptyList());
 
         return ResponseEntity                    
@@ -90,7 +90,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(RefreshTokenRevokedException.class)
-    public ResponseEntity<ApiError> handleRefreshTokenRevokedException(RefreshTokenRevokedException ex){
+    public ResponseEntity<ApiError> handleRefreshTokenRevokedException(RefreshTokenRevokedException ex) {
         ApiError error = new ApiError(HttpStatus.UNAUTHORIZED.value(), ex.getMessage(), Collections.emptyList());
 
         return ResponseEntity                    
@@ -119,7 +119,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidRoleException.class)
-    public ResponseEntity<ApiError> handleRoleNotFoundException(InvalidRoleException ex){
+    public ResponseEntity<ApiError> handleInvalidRoleException(InvalidRoleException ex) {
         ApiError error = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), Collections.emptyList());
 
         return ResponseEntity                    
@@ -128,7 +128,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(LastAdminException.class)
-    public ResponseEntity<ApiError> handleLastAdminException(LastAdminException ex){
+    public ResponseEntity<ApiError> handleLastAdminException(LastAdminException ex) {
         ApiError error = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), Collections.emptyList());
 
         return ResponseEntity                    
@@ -137,11 +137,29 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AdminSelfDeleteException.class)
-    public ResponseEntity<ApiError> handleAdminSelfDeleteException(AdminSelfDeleteException ex){
+    public ResponseEntity<ApiError> handleAdminSelfDeleteException(AdminSelfDeleteException ex) {
         ApiError error = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), Collections.emptyList());
 
         return ResponseEntity                    
                     .status(HttpStatus.BAD_REQUEST)
+                    .body(error);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ApiError> handleBadRequestException(BadRequestException ex) {
+        ApiError error = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), Collections.emptyList());
+
+        return ResponseEntity                    
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(error);
+    }
+
+    @ExceptionHandler(UpdateRequestNotFoundException.class)
+    public ResponseEntity<ApiError> handleUpdateRequestNotFoundException(UpdateRequestNotFoundException ex) {
+        ApiError error = new ApiError(HttpStatus.NOT_FOUND.value(), ex.getMessage(), Collections.emptyList());
+
+        return ResponseEntity                    
+                    .status(HttpStatus.NOT_FOUND)
                     .body(error);
     }
 }

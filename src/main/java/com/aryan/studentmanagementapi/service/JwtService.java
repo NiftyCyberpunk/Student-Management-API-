@@ -20,9 +20,9 @@ public class JwtService {
     private long accessTokenExpiry;
 
     public JwtService(@Value("${jwt.secret}") String secret) {
-        byte[] KeyBytes = Decoders.BASE64.decode(secret);
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
 
-        this.secretKey = Keys.hmacShaKeyFor(KeyBytes);
+        this.secretKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String generateToken(String username) {

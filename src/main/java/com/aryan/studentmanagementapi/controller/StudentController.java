@@ -14,12 +14,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aryan.studentmanagementapi.dto.StudentResponseDTO;
+import com.aryan.studentmanagementapi.dto.StudentUpdateRequestDTO;
 import com.aryan.studentmanagementapi.dto.StudentPageResponseDTO;
 import com.aryan.studentmanagementapi.dto.StudentPatchDTO;
 import com.aryan.studentmanagementapi.dto.StudentRequestDTO;
-import com.aryan.studentmanagementapi.mapper.StudentMapper;
 import com.aryan.studentmanagementapi.response.ApiResponse;
 import com.aryan.studentmanagementapi.service.StudentService;
+import com.aryan.studentmanagementapi.service.StudentUpdateRequestService;
 
 import jakarta.validation.Valid;
 
@@ -27,9 +28,11 @@ import jakarta.validation.Valid;
 public class StudentController {
 
     private final StudentService studentService;
+    private final StudentUpdateRequestService studentUpdateRequestService;
 
-    public StudentController(StudentService studentService, StudentMapper mapper){
+    public StudentController(StudentService studentService, StudentUpdateRequestService studentUpdateRequestService){
         this.studentService = studentService;
+        this.studentUpdateRequestService = studentUpdateRequestService;
     }
 
     @GetMapping("/hello")
@@ -50,7 +53,7 @@ public class StudentController {
     }
 
     @GetMapping("/students/{registrationNo}")
-    public ResponseEntity<ApiResponse<StudentResponseDTO>> getStudent(@PathVariable int registrationNo, Authentication authentication){
+    public ResponseEntity<ApiResponse<StudentResponseDTO>> getStudent(@PathVariable Integer registrationNo, Authentication authentication){
 
         StudentResponseDTO dto = studentService.getStudent(registrationNo, authentication.getName());
 
@@ -74,7 +77,7 @@ public class StudentController {
     } 
 
     @PatchMapping("/students/{registrationNo}")
-    public ResponseEntity<ApiResponse<StudentResponseDTO>> updateStudent(@PathVariable int registrationNo, @Valid @RequestBody StudentPatchDTO dto){
+    public ResponseEntity<ApiResponse<StudentResponseDTO>> updateStudent(@PathVariable Integer registrationNo, @Valid @RequestBody StudentPatchDTO dto){
         
         StudentResponseDTO responseDto = studentService.updateStudentDetails(registrationNo, dto);
 
@@ -86,7 +89,7 @@ public class StudentController {
     }
 
     @DeleteMapping("/students/{registrationNo}")
-    public ResponseEntity<ApiResponse<Void>> deleteStudent(@PathVariable int registrationNo){
+    public ResponseEntity<ApiResponse<Void>> deleteStudent(@PathVariable Integer registrationNo){
         studentService.deleteStudent(registrationNo);
 
         return ResponseEntity
@@ -94,5 +97,11 @@ public class StudentController {
             .body(
                 new ApiResponse<>(HttpStatus.OK.value(), "Student deleted successfully.", null)
             );
+    }
+
+    @PostMapping("/students/{registrationNo}/update-request")
+    public void requestUpdate(@PathVariable Integer registrationNo, @Valid @RequestBody StudentUpdateRequestDTO studentUpdateRequest, Authentication authentication) {
+        
+        studentUpdateRequestService.createRequest(registrationNo, authentication.getName(), studentUpdateRequest);
     }
 }

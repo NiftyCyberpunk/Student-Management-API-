@@ -27,7 +27,14 @@ public class RefreshTokenService {
 
     public RefreshToken createRefreshToken(User user){
 
-        RefreshToken refreshToken = new RefreshToken();
+        RefreshToken refreshToken = refreshTokenRepository
+            .findByUser(user)
+            .orElseGet(() -> {
+                RefreshToken newRefreshToken = new RefreshToken();
+                newRefreshToken.setUser(user);
+                return newRefreshToken;
+            }
+        );
 
         SecureRandom secureRandom = new SecureRandom();
 

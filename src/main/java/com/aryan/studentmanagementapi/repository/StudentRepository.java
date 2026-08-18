@@ -23,10 +23,10 @@ public interface StudentRepository extends JpaRepository<Student, Integer>, JpaS
         FROM Student s
         JOIN FETCH s.branch
     """)
-    public List<Student> findAllWithBranch();
+    List<Student> findAllWithBranch();
 
     @EntityGraph(attributePaths = {"branch"})
     Page<Student> findAll(Specification<Student> spec, Pageable pageable);
 
-    public Optional<Student> findByEmail(String email);
+    Optional<Student> findByEmail(String email);
 }

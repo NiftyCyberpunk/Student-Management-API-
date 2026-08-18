@@ -12,6 +12,8 @@ import com.aryan.studentmanagementapi.dto.LoginRequestDTO;
 import com.aryan.studentmanagementapi.dto.RefreshTokenRequestDTO;
 import com.aryan.studentmanagementapi.dto.StudentRegisterRequestDTO;
 import com.aryan.studentmanagementapi.service.AuthService;
+
+import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -23,26 +25,26 @@ public class AuthController {
     }
 
     @PostMapping("/register/student")
-    public AuthResponseDTO registerStudent(@RequestBody StudentRegisterRequestDTO studentRegisterRequest){
+    public AuthResponseDTO registerStudent(@Valid @RequestBody StudentRegisterRequestDTO studentRegisterRequest){
 
         return authService.registerStudent(studentRegisterRequest);
     }
 
     @PostMapping("/login")
-    public AuthResponseDTO login(@RequestBody LoginRequestDTO loginRequest) {
+    public AuthResponseDTO login(@Valid @RequestBody LoginRequestDTO loginRequest) {
         
         return authService.loginUser(loginRequest);
     }
 
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void logout(@RequestBody RefreshTokenRequestDTO refreshTokenRequest) {
+    public void logout(@Valid @RequestBody RefreshTokenRequestDTO refreshTokenRequest) {
 
         authService.logoutUser(refreshTokenRequest);
     }
 
     @PostMapping("/refresh")
-    public AuthResponseDTO refreshTokens(@RequestBody RefreshTokenRequestDTO refreshTokenRequest) {
+    public AuthResponseDTO refreshTokens(@Valid @RequestBody RefreshTokenRequestDTO refreshTokenRequest) {
        
         return authService.refreshTokens(refreshTokenRequest);
     }

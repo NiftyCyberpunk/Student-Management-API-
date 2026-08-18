@@ -1,19 +1,19 @@
 package com.aryan.studentmanagementapi.dto;
 
 public class StudentResponseDTO {
-    private int registrationNo;   
+    private Integer registrationNo;   
     private String name; 
     private String branch;
-    private int year;
+    private Integer year;
 
-    public StudentResponseDTO(int registrationNo, String name, String branch, int year){
+    public StudentResponseDTO(Integer registrationNo, String name, String branch, Integer year){
         this.registrationNo = registrationNo;
         this.name = name;
         this.branch = branch;
         this.year = year;
     }
 
-    public int getRegistrationNo(){
+    public Integer getRegistrationNo(){
         return this.registrationNo;
     }
 
@@ -25,7 +25,7 @@ public class StudentResponseDTO {
         return this.branch;
     }
 
-    public int getYear(){
+    public Integer getYear(){
         return this.year;
     }
 }

@@ -32,10 +32,12 @@ public class SecurityConfig {
                     .requestMatchers("/auth/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/students").hasAnyRole("ADMIN", "TEACHER")
                     .requestMatchers(HttpMethod.GET, "/students/**").hasAnyRole("ADMIN", "TEACHER", "STUDENT")
+                    .requestMatchers(HttpMethod.POST, "/students/*/update-request").hasAnyRole("ADMIN", "TEACHER", "STUDENT")
                     .requestMatchers(HttpMethod.POST, "/students/**").hasAnyRole("ADMIN", "TEACHER")
                     .requestMatchers(HttpMethod.PATCH, "/students/**").hasAnyRole("ADMIN", "TEACHER")
                     .requestMatchers(HttpMethod.DELETE, "/students/**").hasRole("ADMIN")
                     .requestMatchers("/branches").hasRole("ADMIN")
+                    .requestMatchers("/admin/update-requests/**").hasAnyRole("ADMIN", "TEACHER")
                     .requestMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
             );

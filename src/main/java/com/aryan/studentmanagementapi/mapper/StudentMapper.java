@@ -11,8 +11,10 @@ import com.aryan.studentmanagementapi.dto.StudentPatchDTO;
 import com.aryan.studentmanagementapi.dto.StudentRequestDTO;
 import com.aryan.studentmanagementapi.dto.StudentResponseDTO;
 import com.aryan.studentmanagementapi.dto.StudentSummaryDTO;
+import com.aryan.studentmanagementapi.dto.StudentUpdateRequestResponseDTO;
 import com.aryan.studentmanagementapi.model.Branch;
 import com.aryan.studentmanagementapi.model.Student;
+import com.aryan.studentmanagementapi.model.StudentUpdateRequest;
 
 @Component
 public class StudentMapper {
@@ -86,5 +88,22 @@ public class StudentMapper {
             dto.hasPrevious()
         );
         return repsonseDto;
+    }
+
+    public StudentUpdateRequestResponseDTO toStudentUpdateRequestResponse(StudentUpdateRequest request) {
+
+        StudentUpdateRequestResponseDTO dto = new StudentUpdateRequestResponseDTO();
+
+        dto.setId(request.getId());
+        dto.setRegistrationNo(request.getStudent().getRegistrationNo());
+        dto.setRequestedAt(request.getRequestedAt());
+        if(request.getRequestedBranch() != null)dto.setRequestedBranch(request.getRequestedBranch().getName());
+        dto.setRequestedBy(request.getRequestedBy().getUsername());
+        dto.setRequestedEmail(request.getRequestedEmail());
+        dto.setRequestedName(request.getRequestedName());
+        dto.setRequestedYear(request.getRequestedYear());
+        dto.setStatus(request.getStatus());
+
+        return dto;
     }
 }

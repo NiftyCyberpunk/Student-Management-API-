@@ -1,15 +1,15 @@
 package com.aryan.studentmanagementapi.dto;
 
 public class BranchResponseDTO {
-    private int id;
+    private Integer id;
     private String name;
 
-    public BranchResponseDTO(int id, String name){
+    public BranchResponseDTO(Integer id, String name){
         this.id = id;
         this.name = name;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

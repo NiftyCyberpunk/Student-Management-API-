@@ -29,7 +29,7 @@ public class Student {
 
     @Min(1)
     @Max(4)
-    private int year;
+    private Integer year;
 
     protected Student(){
 
@@ -58,7 +58,7 @@ public class Student {
         return this.branch;
     }
 
-    public int getYear(){
+    public Integer getYear(){
         return this.year;
     }
 
@@ -74,7 +74,7 @@ public class Student {
         this.branch = branch;
     }
 
-    public void setYear(int year){
+    public void setYear(Integer year){
         this.year = year;
     }
 }

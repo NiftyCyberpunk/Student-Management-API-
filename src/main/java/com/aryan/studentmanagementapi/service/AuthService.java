@@ -87,7 +87,7 @@ public class AuthService {
 
     @Transactional
     public AuthResponseDTO loginUser(LoginRequestDTO loginRequest) {
-
+        
         Authentication authentication = 
             authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

@@ -19,8 +19,8 @@ public interface BranchRepository extends JpaRepository<Branch, Integer> {
             LEFT JOIN b.students s
             GROUP BY b.id, b.name
         """)
-    public List<BranchStudentCountDTO> branchStudentCount();
+    List<BranchStudentCountDTO> branchStudentCount();
 
-    public Optional<Branch> findByName(String name);
+    Optional<Branch> findByName(String name);
     
 }

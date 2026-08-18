@@ -63,14 +63,14 @@ public class StudentService {
         return mapper.toStudentPageResponseDTO(studentsPageDto);
     }
 
-    public StudentResponseDTO getStudent(int registrationNo, String currentUsername){
+    public StudentResponseDTO getStudent(Integer registrationNo, String currentUsername){
 
         User user = userRepository
             .findByUsername(currentUsername)
             .orElseThrow(() -> new UserNotFoundException());
 
         if(user.getRole() == Role.STUDENT){
-            if(user.getStudent().getRegistrationNo().equals(registrationNo)){
+            if(!user.getStudent().getRegistrationNo().equals(registrationNo)){
                 throw new AccessDeniedException("You do not have access to this student");
             }
         }
@@ -105,7 +105,7 @@ public class StudentService {
     }
 
     @Transactional
-    public StudentResponseDTO updateStudentDetails(int registrationNo, StudentPatchDTO dto){
+    public StudentResponseDTO updateStudentDetails(Integer registrationNo, StudentPatchDTO dto){
 
         Student student = studentRepository
             .findById(registrationNo)
@@ -139,7 +139,7 @@ public class StudentService {
     }
 
     @Transactional
-    public void deleteStudent(int registrationNo){
+    public void deleteStudent(Integer registrationNo){
         Student student = studentRepository
             .findById(registrationNo)
             .orElseThrow(() -> new StudentNotFoundException(registrationNo));

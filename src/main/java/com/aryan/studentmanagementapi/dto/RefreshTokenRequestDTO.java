@@ -1,8 +1,10 @@
 package com.aryan.studentmanagementapi.dto;
 
+import jakarta.validation.constraints.NotBlank;
 
 public class RefreshTokenRequestDTO {
     
+    @NotBlank
     private String refreshToken;
 
     public String getRefreshToken() {

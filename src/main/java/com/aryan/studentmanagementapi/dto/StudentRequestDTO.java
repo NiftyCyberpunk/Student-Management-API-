@@ -6,22 +6,26 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
 public class StudentRequestDTO {
+
     @NotBlank
     private String name;
+
     @NotBlank
     @Email
     private String email;
+
     @NotBlank
     private String branch;
+    
     @Min(1)
     @Max(4)
-    private int year;
+    private Integer year;
 
     public StudentRequestDTO(){
 
     }
 
-    public StudentRequestDTO(String name, String email, String branch, int year){
+    public StudentRequestDTO(String name, String email, String branch, Integer year){
         this.name = name;
         this.email = email;
         this.branch = branch;
@@ -40,7 +44,7 @@ public class StudentRequestDTO {
         return this.branch;
     }
 
-    public int getYear(){
+    public Integer getYear(){
         return this.year;
     }
 
@@ -56,7 +60,7 @@ public class StudentRequestDTO {
         this.branch = branch;
     }
 
-    public void setYear(int year){
+    public void setYear(Integer year){
         this.year = year;
     }
 }
