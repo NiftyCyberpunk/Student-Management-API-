@@ -9,6 +9,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.aryan.studentmanagementapi.service.CustomUserDetailsService;
 import com.aryan.studentmanagementapi.service.JwtService;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Component
@@ -45,15 +46,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
 
-        String username = jwtService.extractUsername(token);
+        try {
+            String username = jwtService.extractUsername(token);
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        if(jwtService.isTokenValid(token, userDetails.getUsername()) && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            if(SecurityContextHolder.getContext().getAuthentication() == null) {
+                UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (JwtException e) {
             
-            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
             
         filterChain.doFilter(request, response);
