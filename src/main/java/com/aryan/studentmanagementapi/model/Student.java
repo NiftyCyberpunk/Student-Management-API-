@@ -29,6 +29,7 @@ public class Student {
 
     @Min(1)
     @Max(4)
+    @Column(nullable = false)
     private Integer year;
 
     protected Student(){

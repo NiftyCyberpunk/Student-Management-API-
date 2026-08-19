@@ -83,7 +83,7 @@ public class BranchController {
     }
 
     @DeleteMapping("/branches/{name}")
-    public ResponseEntity<ApiResponse<BranchResponseDTO>> deleteBranch(@PathVariable String name){
+    public ResponseEntity<ApiResponse<Void>> deleteBranch(@PathVariable String name){
 
         branchService.deleteBranch(name);
 

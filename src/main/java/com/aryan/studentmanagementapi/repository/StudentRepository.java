@@ -29,4 +29,6 @@ public interface StudentRepository extends JpaRepository<Student, Integer>, JpaS
     Page<Student> findAll(Specification<Student> spec, Pageable pageable);
 
     Optional<Student> findByEmail(String email);
+
+    boolean existsByBranchId(Integer brnachId);
 }
