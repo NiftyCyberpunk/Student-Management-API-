@@ -11,6 +11,7 @@ import com.aryan.studentmanagementapi.dto.StudentUpdateRequestDTO;
 import com.aryan.studentmanagementapi.dto.StudentUpdateRequestResponseDTO;
 import com.aryan.studentmanagementapi.exception.BadRequestException;
 import com.aryan.studentmanagementapi.exception.BranchNotFoundException;
+import com.aryan.studentmanagementapi.exception.StudentAlreadyExistsException;
 import com.aryan.studentmanagementapi.exception.StudentNotFoundException;
 import com.aryan.studentmanagementapi.exception.UpdateRequestNotFoundException;
 import com.aryan.studentmanagementapi.exception.UserNotFoundException;
@@ -128,6 +129,16 @@ public class StudentUpdateRequestService {
             }
 
             if(request.getRequestedEmail() != null) {
+                studentRepository
+                    .findByEmail(request.getRequestedEmail())
+                    .ifPresent(foundStudent -> {
+                        if(!foundStudent.getRegistrationNo().equals(student.getRegistrationNo())){
+                            throw new StudentAlreadyExistsException(
+                                "Student with email " + request.getRequestedEmail() + " already exists."
+                            );
+                        }
+                    }
+                );
                 student.setEmail(request.getRequestedEmail());
             }
 

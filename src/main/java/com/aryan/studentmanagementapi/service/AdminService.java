@@ -3,6 +3,7 @@ package com.aryan.studentmanagementapi.service;
 import com.aryan.studentmanagementapi.dto.AuthResponseDTO;
 import com.aryan.studentmanagementapi.dto.RegisterRequestDTO;
 import com.aryan.studentmanagementapi.exception.AdminSelfDeleteException;
+import com.aryan.studentmanagementapi.exception.BadRequestException;
 import com.aryan.studentmanagementapi.exception.InvalidRoleException;
 import com.aryan.studentmanagementapi.exception.LastAdminException;
 
@@ -26,8 +27,27 @@ public class AdminService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    private AuthResponseDTO createAuthResponseDTO(String accessToken, String refreshToken){
-        return new AuthResponseDTO(accessToken, refreshToken);
+    private AuthResponseDTO registerUser(RegisterRequestDTO registerRequest, Role role) {
+        userRepository
+            .findByUsername(registerRequest.getUsername())
+            .ifPresent(existingUser -> {
+                throw new UsernameAlreadyExistsException();
+            }
+        );
+
+        User user = new User(
+            registerRequest.getUsername(),
+            passwordEncoder.encode(registerRequest.getPassword()),
+            role
+        );
+
+        userRepository.save(user);
+
+        String accessToken = jwtService.generateToken(user.getUsername());
+
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+
+        return new AuthResponseDTO(accessToken, refreshToken.getRefreshToken());
     }
 
     public AdminService(UserRepository userRepository, RefreshTokenService refreshTokenService, PasswordEncoder passwordEncoder, JwtService jwtService){
@@ -40,51 +60,13 @@ public class AdminService {
     @Transactional
     public AuthResponseDTO registerAdmin(RegisterRequestDTO registerRequest) {
 
-        userRepository
-            .findByUsername(registerRequest.getUsername())
-            .ifPresent(existingUser -> {
-                throw new UsernameAlreadyExistsException();
-            }
-        );
-
-        User user = new User(
-            registerRequest.getUsername(),
-            passwordEncoder.encode(registerRequest.getPassword()),
-            Role.ADMIN
-        );
-
-        userRepository.save(user);
-
-        String accessToken = jwtService.generateToken(user.getUsername());
-
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
-
-        return createAuthResponseDTO(accessToken, refreshToken.getRefreshToken());
+        return registerUser(registerRequest, Role.ADMIN);
     }
 
     @Transactional
     public AuthResponseDTO registerTeacher(RegisterRequestDTO registerRequest) {
 
-        userRepository
-            .findByUsername(registerRequest.getUsername())
-            .ifPresent(existingUser -> {
-                throw new UsernameAlreadyExistsException();
-            }
-        );
-
-        User user = new User(
-            registerRequest.getUsername(),
-            passwordEncoder.encode(registerRequest.getPassword()),
-            Role.TEACHER
-        );
-
-        userRepository.save(user);
-
-        String accessToken = jwtService.generateToken(user.getUsername());
-
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
-
-        return createAuthResponseDTO(accessToken, refreshToken.getRefreshToken());
+        return registerUser(registerRequest, Role.TEACHER);
     }
 
     public void changeRole(String username, String role){
@@ -108,7 +90,7 @@ public class AdminService {
     }
 
     @Transactional
-    public void deleteUser(String username, String currentUsername){
+    public void disableUser(String username, String currentUsername){
 
         User user = userRepository
             .findByUsername(username)
@@ -129,7 +111,12 @@ public class AdminService {
             }
         }
 
+        if(!user.isEnabled()){
+            throw new BadRequestException("Cannot disable the disabled user.");
+        }
+
         refreshTokenService.deleteRefreshTokenByUser(user);
-        userRepository.delete(user);
+        user.setEnabled(false);
+        userRepository.save(user);
     }
 }

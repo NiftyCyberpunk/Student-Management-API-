@@ -7,6 +7,8 @@ import java.util.Collections;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,90 +18,71 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private ResponseEntity<ApiError> buildError(HttpStatus status, String message){
+        ApiError error = new ApiError(status.value(), message, Collections.emptyList());
+
+        return ResponseEntity
+            .status(status)
+            .body(error);
+    }
     
     @ExceptionHandler(StudentNotFoundException.class)
-    public ResponseEntity<ApiError> handleStudentNotFound(StudentNotFoundException ex) {
-        ApiError error = new ApiError(HttpStatus.NOT_FOUND.value(), ex.getMessage(), Collections.emptyList());
+    public ResponseEntity<ApiError> handleStudentNotFound(StudentNotFoundException ex){
 
-        return ResponseEntity                    
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(error);
+        return buildError(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
     @ExceptionHandler(StudentAlreadyExistsException.class)
-    public ResponseEntity<ApiError> handleStudentAlreadyExists(StudentAlreadyExistsException ex) {
-        ApiError error = new ApiError(HttpStatus.CONFLICT.value(), ex.getMessage(), Collections.emptyList());
-
-        return ResponseEntity                    
-                    .status(HttpStatus.CONFLICT)
-                    .body(error);
+    public ResponseEntity<ApiError> handleStudentAlreadyExists(StudentAlreadyExistsException ex){
+        
+        return buildError(HttpStatus.CONFLICT, ex.getMessage());
     }
 
     @ExceptionHandler(BranchNotFoundException.class)
-    public ResponseEntity<ApiError> BranchNotFound(BranchNotFoundException ex) {
-        ApiError error = new ApiError(HttpStatus.NOT_FOUND.value(), ex.getMessage(), Collections.emptyList());
+    public ResponseEntity<ApiError> handleBranchNotFound(BranchNotFoundException ex){
 
-        return ResponseEntity                    
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(error);
+        return buildError(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
     @ExceptionHandler(BranchAlreadyExistsException.class)
-    public ResponseEntity<ApiError> handleBranchAlreadyExistsException(BranchAlreadyExistsException ex) {
-        ApiError error = new ApiError(HttpStatus.CONFLICT.value(), ex.getMessage(), Collections.emptyList());
-
-        return ResponseEntity                    
-                    .status(HttpStatus.CONFLICT)
-                    .body(error);
+    public ResponseEntity<ApiError> handleBranchAlreadyExistsException(BranchAlreadyExistsException ex){
+        
+        return buildError(HttpStatus.CONFLICT, ex.getMessage());
     }
 
     @ExceptionHandler(UsernameAlreadyExistsException.class)
-    public ResponseEntity<ApiError> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException ex) {
-        ApiError error = new ApiError(HttpStatus.CONFLICT.value(), ex.getMessage(), Collections.emptyList());
-
-        return ResponseEntity                    
-                    .status(HttpStatus.CONFLICT)
-                    .body(error);
+    public ResponseEntity<ApiError> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException ex){
+        
+        return buildError(HttpStatus.CONFLICT, ex.getMessage());
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<ApiError> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
-        ApiError error = new ApiError(HttpStatus.CONFLICT.value(), ex.getMessage(), Collections.emptyList());
-
-        return ResponseEntity                    
-                    .status(HttpStatus.CONFLICT)
-                    .body(error);
+    public ResponseEntity<ApiError> handleUserAlreadyExistsException(UserAlreadyExistsException ex){
+        
+        return buildError(HttpStatus.CONFLICT, ex.getMessage());
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ApiError> handleUserNotFoundException(UserNotFoundException ex) {
-        ApiError error = new ApiError(HttpStatus.NOT_FOUND.value(), ex.getMessage(), Collections.emptyList());
-
-        return ResponseEntity                    
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(error);
+    public ResponseEntity<ApiError> handleUserNotFoundException(UserNotFoundException ex){
+        
+        return buildError(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
     @ExceptionHandler(RefreshTokenExpiredException.class)
-    public ResponseEntity<ApiError> handleRefreshTokenExpiredException(RefreshTokenExpiredException ex) {
-        ApiError error = new ApiError(HttpStatus.UNAUTHORIZED.value(), ex.getMessage(), Collections.emptyList());
-
-        return ResponseEntity                    
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(error);
+    public ResponseEntity<ApiError> handleRefreshTokenExpiredException(RefreshTokenExpiredException ex){
+        
+        return buildError(HttpStatus.UNAUTHORIZED, ex.getMessage());
     }
 
     @ExceptionHandler(RefreshTokenRevokedException.class)
-    public ResponseEntity<ApiError> handleRefreshTokenRevokedException(RefreshTokenRevokedException ex) {
-        ApiError error = new ApiError(HttpStatus.UNAUTHORIZED.value(), ex.getMessage(), Collections.emptyList());
-
-        return ResponseEntity                    
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(error);
+    public ResponseEntity<ApiError> handleRefreshTokenRevokedException(RefreshTokenRevokedException ex){
+        
+        return buildError(HttpStatus.UNAUTHORIZED, ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiError> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ApiError> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex){
 
         List<String> errors = new ArrayList<>();
 
@@ -119,47 +102,51 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidRoleException.class)
-    public ResponseEntity<ApiError> handleInvalidRoleException(InvalidRoleException ex) {
-        ApiError error = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), Collections.emptyList());
-
-        return ResponseEntity                    
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(error);
+    public ResponseEntity<ApiError> handleInvalidRoleException(InvalidRoleException ex){
+        
+        return buildError(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     @ExceptionHandler(LastAdminException.class)
-    public ResponseEntity<ApiError> handleLastAdminException(LastAdminException ex) {
-        ApiError error = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), Collections.emptyList());
-
-        return ResponseEntity                    
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(error);
+    public ResponseEntity<ApiError> handleLastAdminException(LastAdminException ex){
+        
+        return buildError(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     @ExceptionHandler(AdminSelfDeleteException.class)
-    public ResponseEntity<ApiError> handleAdminSelfDeleteException(AdminSelfDeleteException ex) {
-        ApiError error = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), Collections.emptyList());
-
-        return ResponseEntity                    
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(error);
+    public ResponseEntity<ApiError> handleAdminSelfDeleteException(AdminSelfDeleteException ex){
+        
+        return buildError(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ApiError> handleBadRequestException(BadRequestException ex) {
-        ApiError error = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), Collections.emptyList());
-
-        return ResponseEntity                    
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(error);
+    public ResponseEntity<ApiError> handleBadRequestException(BadRequestException ex){
+        
+        return buildError(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     @ExceptionHandler(UpdateRequestNotFoundException.class)
-    public ResponseEntity<ApiError> handleUpdateRequestNotFoundException(UpdateRequestNotFoundException ex) {
-        ApiError error = new ApiError(HttpStatus.NOT_FOUND.value(), ex.getMessage(), Collections.emptyList());
+    public ResponseEntity<ApiError> handleUpdateRequestNotFoundException(UpdateRequestNotFoundException ex){
+        
+        return buildError(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
 
-        return ResponseEntity                    
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(error);
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiError> handleAccessDeniedException(AccessDeniedException ex){
+        
+        return buildError(HttpStatus.FORBIDDEN, ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiError> handleUnexpectedException(Exception ex){
+        
+        return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong.");
+    }
+
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<ApiError> handleDisabledException(Exception ex){
+        
+        return buildError(HttpStatus.UNAUTHORIZED, "User is not registered.");
     }
 }
+

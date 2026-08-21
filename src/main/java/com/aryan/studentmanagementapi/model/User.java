@@ -30,6 +30,9 @@ public class User {
     @JoinColumn(name = "student_id")
     private Student student;
 
+    @Column(nullable = false)
+    private boolean enabled = true;
+
     public User() {
 
     }
@@ -60,6 +63,10 @@ public class User {
         return student;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -74,5 +81,9 @@ public class User {
 
     public void setStudent(Student student) {
         this.student = student;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

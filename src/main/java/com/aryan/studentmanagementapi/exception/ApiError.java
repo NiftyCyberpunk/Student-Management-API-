@@ -12,7 +12,7 @@ public class ApiError {
     public ApiError(int status, String message, List<String> errors){
         this.status = status;
         this.message = message;
-        this.timestamp = LocalDateTime.now();//nobody can forgot the time now
+        this.timestamp = LocalDateTime.now();
         this.errors = errors;
     }
 

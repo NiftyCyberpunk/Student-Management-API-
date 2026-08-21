@@ -35,18 +35,6 @@ public class JwtService {
             .compact();
     }
 
-    public boolean isTokenValid(String token, String username) {
-
-        String tokenUsername = Jwts.parser()
-            .verifyWith(secretKey)
-            .build()
-            .parseSignedClaims(token)
-            .getPayload()
-            .getSubject();
-        
-        return tokenUsername.equals(username);
-    }
-
     public String extractUsername(String token) {
 
         return Jwts.parser()

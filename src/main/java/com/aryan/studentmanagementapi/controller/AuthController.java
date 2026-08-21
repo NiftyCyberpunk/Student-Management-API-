@@ -25,6 +25,7 @@ public class AuthController {
     }
 
     @PostMapping("/register/student")
+    @ResponseStatus(HttpStatus.CREATED)
     public AuthResponseDTO registerStudent(@Valid @RequestBody StudentRegisterRequestDTO studentRegisterRequest){
 
         return authService.registerStudent(studentRegisterRequest);

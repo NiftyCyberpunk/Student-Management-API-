@@ -35,3 +35,4 @@ build/
 
 ### Secerts ###
 scripts/dev_env.sh
+scripts/run.ps1

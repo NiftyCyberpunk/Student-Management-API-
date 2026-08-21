@@ -2,6 +2,7 @@ package com.aryan.studentmanagementapi.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aryan.studentmanagementapi.dto.AuthResponseDTO;
@@ -35,27 +37,31 @@ public class AdminController {
     }
 
     @PostMapping("/users/admin")
-    public AuthResponseDTO registerAdmin(@RequestBody RegisterRequestDTO registerRequest) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public AuthResponseDTO registerAdmin(@Valid @RequestBody RegisterRequestDTO registerRequest) {
         
         return adminService.registerAdmin(registerRequest);
     }
 
     @PostMapping("/users/teacher")
-    public AuthResponseDTO registerTeacher(@RequestBody RegisterRequestDTO registerRequest) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public AuthResponseDTO registerTeacher(@Valid @RequestBody RegisterRequestDTO registerRequest) {
         
         return adminService.registerTeacher(registerRequest);
     }
     
     @PatchMapping("/users/{username}/role")
-    public void changeRole(@PathVariable String username, @RequestBody ChangeRoleRequestDTO changeRoleRequest) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void changeRole(@PathVariable String username, @Valid @RequestBody ChangeRoleRequestDTO changeRoleRequest) {
         
         adminService.changeRole(username, changeRoleRequest.getRole());
     }
 
     @DeleteMapping("/users/{username}")
-    public void deleteUser(@PathVariable String username, Authentication authentication) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void disableUser(@PathVariable String username, Authentication authentication) {
 
-        adminService.deleteUser(username, authentication.getName());
+        adminService.disableUser(username, authentication.getName());
     }
 
     @GetMapping("/update-requests")
@@ -65,6 +71,7 @@ public class AdminController {
     }
 
     @PatchMapping("/update-requests/{requestId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void requestCheck(@Valid @RequestBody StudentRequestStatusUpdateDTO studentRequestStatusUpdate, @PathVariable Long requestId, Authentication authentication) {
 
         studentUpdateRequestService.updateRequestStatus(requestId, authentication.getName(), studentRequestStatusUpdate);

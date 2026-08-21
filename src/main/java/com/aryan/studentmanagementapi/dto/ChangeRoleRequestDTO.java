@@ -1,7 +1,10 @@
 package com.aryan.studentmanagementapi.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class ChangeRoleRequestDTO {
     
+    @NotBlank
     private String role;
 
     public String getRole() {

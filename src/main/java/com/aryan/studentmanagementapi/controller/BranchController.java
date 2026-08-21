@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aryan.studentmanagementapi.dto.BranchRequestDTO;
@@ -83,14 +84,9 @@ public class BranchController {
     }
 
     @DeleteMapping("/branches/{name}")
-    public ResponseEntity<ApiResponse<Void>> deleteBranch(@PathVariable String name){
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteBranch(@PathVariable String name){
 
         branchService.deleteBranch(name);
-
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(
-                new ApiResponse<>(HttpStatus.OK.value(), "Branch deleted successfully.", null)
-            );
     }
 }

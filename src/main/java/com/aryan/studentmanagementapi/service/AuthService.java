@@ -32,10 +32,6 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
-    private AuthResponseDTO createAuthResponseDTO(String accessToken, String refreshToken){
-        return new AuthResponseDTO(accessToken, refreshToken);
-    }
-
     public AuthService(UserRepository userRepository, StudentRepository studentRepository, JwtService jwtService, RefreshTokenService refreshTokenService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager){
         this.userRepository = userRepository;
         this.studentRepository = studentRepository;
@@ -82,7 +78,7 @@ public class AuthService {
 
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
 
-        return createAuthResponseDTO(accessToken, refreshToken.getRefreshToken());
+        return new AuthResponseDTO(accessToken, refreshToken.getRefreshToken());
     }
 
     @Transactional
@@ -105,7 +101,7 @@ public class AuthService {
 
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
         
-        return createAuthResponseDTO(accessToken, refreshToken.getRefreshToken());
+        return new AuthResponseDTO(accessToken, refreshToken.getRefreshToken());
     }
 
     @Transactional
@@ -121,7 +117,7 @@ public class AuthService {
 
         String accessToken = jwtService.generateToken(validRefreshToken.getUser().getUsername());
 
-        return createAuthResponseDTO(accessToken, newRefreshToken.getRefreshToken());
+        return new AuthResponseDTO(accessToken, newRefreshToken.getRefreshToken());
     }
 
     @Transactional

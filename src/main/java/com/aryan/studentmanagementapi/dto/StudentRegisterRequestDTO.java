@@ -1,9 +1,17 @@
 package com.aryan.studentmanagementapi.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class StudentRegisterRequestDTO {
     
+    @NotNull
     private Integer registrationNumber;
+
+    @NotBlank
     private String username;
+
+    @NotBlank
     private String password;
 
     public Integer getRegistrationNumber() {

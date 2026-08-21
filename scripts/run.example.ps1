@@ -1,0 +1,6 @@
+$env:DB_URL="your db url"
+$env:DB_USERNAME="your db username"
+$env:DB_PASSWORD="your db password"
+$env:JWT_SECRET="your jwt secret key"
+$env:REFRESH_TOKEN_EXPIRY="your token expiry days"
+$env:ACCESS_TOKEN_EXPIRY="your token expiry minutes"

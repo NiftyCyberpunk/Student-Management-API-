@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class StudentRequestDTO {
 
@@ -17,6 +18,7 @@ public class StudentRequestDTO {
     @NotBlank
     private String branch;
     
+    @NotNull
     @Min(1)
     @Max(4)
     private Integer year;
